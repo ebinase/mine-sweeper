@@ -3,7 +3,6 @@
 import { useState } from 'react';
 
 // basic
-// TODO: 爆弾を踏んだときの処理
 // TODO: 何もないマスの一括開放(flood fill)
 // TODO: クリアしたときの処理
 // TODO: フラグ設置機能
@@ -51,9 +50,24 @@ const getBombCount = (board: Board): Board => {
 };
 
 const PlayGround = () => {
+  const [isOver, setIsOver] = useState(false);
   const [boardData, setBoard] = useState<Board>(board);
 
   const open = (index: number) => {
+    // ゲームが終了していたら何もしない
+    if (isOver) return;
+    // すでに開いていたら何もしない
+    if (boardData[index].isOpen) return;
+
+    // 爆弾を踏んだらゲームオーバー
+    if (boardData[index].isBomb) {
+      alert('💣💥');
+      const newBoard = boardData.map((i) => i.isBomb ? { ...i, isOpen: true } : i);
+      setBoard(newBoard);
+      setIsOver(true);
+      return;
+    };
+
     const newBoard = boardData.map((i, j) => {
       if (j === index) return { ...i, isOpen: true };
       return i;
@@ -75,7 +89,7 @@ const PlayGround = () => {
               }
               onClick={() => open(j)}
             >
-              {i.isOpen ? i.value : ''}
+              {i.isOpen ? (i.isBomb ? '💥' : i.value) : ''}
             </div>
           );
         })}
