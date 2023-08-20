@@ -2,6 +2,18 @@
 
 import { useState } from 'react';
 
+// basic
+// TODO: 爆弾を踏んだときの処理
+// TODO: 何もないマスの一括開放(flood fill)
+// TODO: クリアしたときの処理
+// TODO: フラグ設置機能
+// TODO: CSS修正
+// グローバルメニュー
+// TODO: タイマー
+// TODO: リセットボタン
+// TODO: 絵文字
+// TODO: 難易度選択
+
 const random = () => Math.floor(Math.random() * 64);
 
 const bombPositions = Array(10)
