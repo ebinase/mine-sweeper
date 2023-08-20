@@ -13,6 +13,8 @@ import { useState } from 'react';
 // TODO: 絵文字
 // TODO: 難易度選択
 
+const directions = [-1, +1, -8, +8, -9, +9, -7, +7];
+
 const random = () => Math.floor(Math.random() * 64);
 
 const bombPositions = Array(10)
@@ -34,26 +36,58 @@ const getBombCount = (board: Board): Board => {
   return board.map((i, j) => {
     if (board[j].isBomb) {
       return i;
-    };
+    }
 
     let count = 0;
-    if (board[j - 1]?.isBomb) count++;
-    if (board[j + 1]?.isBomb) count++;
-    if (board[j - 8]?.isBomb) count++;
-    if (board[j + 8]?.isBomb) count++;
-    if (board[j - 9]?.isBomb) count++;
-    if (board[j + 9]?.isBomb) count++;
-    if (board[j - 7]?.isBomb) count++;
-    if (board[j + 7]?.isBomb) count++;
+    for (const direction of directions) {
+      if (board[j + direction]?.isBomb) count++;
+    }
     return { ...i, value: count };
   });
 };
 
+const open = (board: Board, index: number): Board => {
+  return board.map((i, j) => {
+    if (j === index) return { ...i, isOpen: true };
+    return i;
+  });
+};
+
+// 何もないマスを一括開放する
+const openEmptyArea = (board: Board, index: number): Board => {
+  if (board[index].isOpen || board[index].value !== 0) return board;
+
+  // flood fill
+  let newBoard = board;
+  let queue = [index];
+
+  while (queue.length > 0) {
+    const target = queue.shift() as number;
+
+    newBoard = open(newBoard, target);
+
+    console.log(target,newBoard[target].value, newBoard[target].value === 0);
+
+    // 何もないマスだったら周囲のマスをキューに追加
+    if (newBoard[target].value === 0) {
+      for (const direction of directions) {
+        const index = target + direction;
+        if (!!newBoard[index] && !newBoard[index].isBomb && !newBoard[index].isOpen) {
+          queue.push(index);
+        }
+      }
+    }
+  }
+
+  return newBoard;
+};
+
 const PlayGround = () => {
   const [isOver, setIsOver] = useState(false);
-  const [boardData, setBoard] = useState<Board>(board);
+  const [boardData, setBoard] = useState<Board>(getBombCount(board));
 
-  const open = (index: number) => {
+  const handleClick = (index: number) => {
+
     // ゲームが終了していたら何もしない
     if (isOver) return;
     // すでに開いていたら何もしない
@@ -62,34 +96,31 @@ const PlayGround = () => {
     // 爆弾を踏んだらゲームオーバー
     if (boardData[index].isBomb) {
       alert('💣💥');
-      const newBoard = boardData.map((i) => i.isBomb ? { ...i, isOpen: true } : i);
+      const newBoard = boardData.map((i) => (i.isBomb ? { ...i, isOpen: true } : i));
       setBoard(newBoard);
       setIsOver(true);
       return;
-    };
+    }
 
-    const newBoard = boardData.map((i, j) => {
-      if (j === index) return { ...i, isOpen: true };
-      return i;
-    });
-    setBoard(newBoard);
+    setBoard(boardData[index].value === 0 ? openEmptyArea(boardData, index) : open(boardData, index));
   };
 
   return (
     <div>
       <h1>Mine Sweeper</h1>
       <div className='grid grid-cols-8 bg-cyan-800 gap-1 p-2'>
-        {getBombCount(boardData).map((i, j) => {
+        {boardData.map((i, j) => {
           return (
             <div
+            suppressHydrationWarning
               key={j}
               className={
                 'w-20 h-20 text-black flex justify-center items-center ' +
                 (i.isOpen ? (i.isBomb ? 'bg-red-800' : 'bg-slate-50') : 'bg-slate-400')
               }
-              onClick={() => open(j)}
+              onClick={() => handleClick(j)}
             >
-              {i.isOpen ? (i.isBomb ? '💥' : i.value) : ''}
+             {j+':'} {i.value ===0 ? '🐶' : i.value}
             </div>
           );
         })}
