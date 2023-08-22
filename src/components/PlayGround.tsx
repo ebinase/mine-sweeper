@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 
 // basic
-// TODO: 何もないマスの一括開放(flood fill)
 // TODO: クリアしたときの処理
 // TODO: フラグ設置機能
 // TODO: CSS修正
@@ -173,14 +172,14 @@ const PlayGround = () => {
   return (
     <div>
       <h1>Mine Sweeper</h1>
-      <div className='grid grid-cols-8 bg-cyan-800 gap-1 p-2'>
+      <div className='grid grid-cols-8 bg-slate-700 gap-1 p-2'>
         {board.flat().map((cell, j) => {
           return (
             <div
               key={j}
               className={
                 'w-20 h-20 text-black flex justify-center items-center ' +
-                (cell.isBomb ? 'bg-red-800' : 'bg-slate-50')
+                (cell.isOpen ? (cell.isBomb ? 'bg-red-800' : 'bg-slate-50') : 'bg-slate-500')
               }
               onClick={() => handleClick(j)}
             >
