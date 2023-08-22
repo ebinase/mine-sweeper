@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // basic
 // TODO: 何もないマスの一括開放(flood fill)
@@ -49,6 +49,11 @@ const initialBoard: Board = [...Array(64)].map((_, j) => {
     value: null,
   };
 });
+
+const generateRandomBoard = () => {
+  const matrix = convert(initialBoard);
+  return getBombCount(matrix);
+}
 
 // 一次元の盤面の配列を二次元に変換する
 const convert = (board: Board): MatrixBoard => {
@@ -133,7 +138,16 @@ const openEmptyArea = (board: MatrixBoard, selected: [number, number]): MatrixBo
 
 const PlayGround = () => {
   const [isOver, setIsOver] = useState(false);
-  const [board, setBoard] = useState<MatrixBoard>(getBombCount(convert(initialBoard)));
+  const [board, setBoard] = useState<MatrixBoard>([...Array(64)].fill({
+    isOpen: false,
+    isBomb: false,
+    value: 1,
+  } as Cell));
+
+  useEffect(() => {
+    const randomBoard = generateRandomBoard();
+    setBoard(randomBoard);
+}, []);
 
   const handleClick = (index: number) => {
     const position = convertIndex(index);
