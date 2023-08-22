@@ -210,7 +210,7 @@ const PlayGround = () => {
       <h1>Mine Sweeper {gameState==="win" && "🎉🎉🎉"}</h1>
       <div className='grid grid-cols-8 bg-slate-700 gap-1 p-2'>
         {board.flat().map((cell, j) => {
-          return <Cell key={j} cell={cell} handleClick={() => handleClick(j)}></Cell>;
+          return <Cell key={j} cell={cell} handleClick={() => handleClick(j)} isFailed={gameState==="lose"}></Cell>;
         })}
       </div>
     </div>

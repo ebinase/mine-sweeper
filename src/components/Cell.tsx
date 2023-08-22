@@ -6,13 +6,12 @@ import { CellData } from './PlayGround';
 type Props = {
   cell: CellData;
   handleClick: () => void;
+  isFailed: boolean;
 };
 
 const RIGHT_CLICK_EVENT = 2 as const;
 
-const Cell: React.FC<Props> = (props) => {
-  const { cell, handleClick } = props;
-
+const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
   const [isLongPress, setIsLongPress] = useState(false);
   const pressTimer = useRef<NodeJS.Timeout | null>(null);
   // フラグの状態は左クリック長押しと右クリックで切り替える
@@ -45,8 +44,8 @@ const Cell: React.FC<Props> = (props) => {
   return (
     <div
       className={
-        'w-20 h-20 text-black flex justify-center items-center ' +
-        (cell.isOpen ? (cell.isBomb ? 'bg-red-800' : 'bg-slate-50') : 'bg-slate-500')
+        'w-20 h-20 text-black flex justify-center items-center text-lg ' +
+        (cell.isOpen ? (cell.isBomb ? 'bg-red-800 text-4xl' : 'bg-slate-50') : 'bg-slate-500')
       }
       onMouseDown={(e) => e.button !== RIGHT_CLICK_EVENT && handleMouseDown()} // 右クリックで開放してしまうのを防ぐ
       onMouseUp={(e) => e.button !== RIGHT_CLICK_EVENT && handleMouseUp()}
@@ -56,7 +55,7 @@ const Cell: React.FC<Props> = (props) => {
       }}
     >
       {cell.isOpen 
-      ? (cell.isBomb ? '💣' : cell.value)
+      ? (cell.isBomb ? (isFailed ? '💥' : '💣') : cell.value)
       : isFlagged && '🚩'
       }
     </div>
