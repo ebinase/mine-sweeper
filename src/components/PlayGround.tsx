@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Cell from './Cell';
 
 // basic
 // TODO: クリアしたときの処理
-// TODO: フラグ設置機能
 // TODO: CSS修正
 // グローバルメニュー
 // TODO: タイマー
@@ -13,15 +13,15 @@ import { useEffect, useState } from 'react';
 // TODO: 難易度選択
 
 const directions = [
-        [-1, -1], 
-        [-1, 0], 
-        [-1, 1], 
-        [0, -1], 
-        [0, 1], 
-        [1, -1],
-        [1, 0],
-        [1, 1]
-      ];
+  [-1, -1],
+  [-1, 0],
+  [-1, 1],
+  [0, -1],
+  [0, 1],
+  [1, -1],
+  [1, 0],
+  [1, 1],
+];
 
 const random = () => Math.floor(Math.random() * 64);
 
@@ -30,15 +30,15 @@ const isInside = (position: Array<number>) => {
   const cols = 8;
   const [row, col] = position;
   return row >= 0 && row < rows && col >= 0 && col < cols;
-}
+};
 
 const bombPositions = Array(10)
   .fill(null)
   .map(() => random());
 
-type Cell = { isOpen: boolean; isBomb: boolean; value: number | null }
-type Board = Array<Cell>;
-type MatrixBoard = Cell[][];
+export type CellData = { isOpen: boolean; isBomb: boolean; value: number | null };
+type Board = Array<CellData>;
+type MatrixBoard = CellData[][];
 
 const initialBoard: Board = [...Array(64)].map((_, j) => {
   const isBomb = bombPositions.includes(j);
@@ -52,23 +52,23 @@ const initialBoard: Board = [...Array(64)].map((_, j) => {
 const generateRandomBoard = () => {
   const matrix = convert(initialBoard);
   return getBombCount(matrix);
-}
+};
 
 // 一次元の盤面の配列を二次元に変換する
 const convert = (board: Board): MatrixBoard => {
-  const newBoard: Cell[][] = [];
+  const newBoard: CellData[][] = [];
   for (let i = 0; i < 8; i++) {
     newBoard.push(board.slice(i * 8, i * 8 + 8));
   }
   return newBoard;
-}
+};
 
 // 一次元配列の座標を二次元配列の座標に変換する
 const convertIndex = (index: number): [number, number] => {
   const row = Math.floor(index / 8);
   const col = index % 8;
   return [row, col];
-}
+};
 
 // 周囲の爆弾の数を数える
 const getBombCount = (matrix: MatrixBoard): MatrixBoard => {
@@ -125,7 +125,11 @@ const openEmptyArea = (board: MatrixBoard, selected: [number, number]): MatrixBo
     if (newBoard[target[0]][target[1]].value === 0) {
       for (let direction of directions) {
         const position = [target[0] + direction[0], target[1] + direction[1]] as [number, number];
-        if (isInside(position) && !newBoard[position[0]][position[1]].isBomb && !newBoard[position[0]][position[1]].isOpen) {
+        if (
+          isInside(position) &&
+          !newBoard[position[0]][position[1]].isBomb &&
+          !newBoard[position[0]][position[1]].isOpen
+        ) {
           queue.push(position);
         }
       }
@@ -137,16 +141,18 @@ const openEmptyArea = (board: MatrixBoard, selected: [number, number]): MatrixBo
 
 const PlayGround = () => {
   const [isOver, setIsOver] = useState(false);
-  const [board, setBoard] = useState<MatrixBoard>([...Array(64)].fill({
-    isOpen: false,
-    isBomb: false,
-    value: 1,
-  } as Cell));
+  const [board, setBoard] = useState<MatrixBoard>(
+    [...Array(64)].fill({
+      isOpen: false,
+      isBomb: false,
+      value: 1,
+    } as CellData),
+  );
 
   useEffect(() => {
     const randomBoard = generateRandomBoard();
     setBoard(randomBoard);
-}, []);
+  }, []);
 
   const handleClick = (index: number) => {
     const position = convertIndex(index);
@@ -174,18 +180,7 @@ const PlayGround = () => {
       <h1>Mine Sweeper</h1>
       <div className='grid grid-cols-8 bg-slate-700 gap-1 p-2'>
         {board.flat().map((cell, j) => {
-          return (
-            <div
-              key={j}
-              className={
-                'w-20 h-20 text-black flex justify-center items-center ' +
-                (cell.isOpen ? (cell.isBomb ? 'bg-red-800' : 'bg-slate-50') : 'bg-slate-500')
-              }
-              onClick={() => handleClick(j)}
-            >
-             {cell.isOpen ? cell.value : ''}
-            </div>
-          );
+          return <Cell key={j} cell={cell} handleClick={() => handleClick(j)}></Cell>;
         })}
       </div>
     </div>
