@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Cell from './Cell';
 
 // basic
-// TODO: クリアしたときの処理
 // TODO: CSS修正
 // グローバルメニュー
 // TODO: タイマー
@@ -139,8 +138,24 @@ const openEmptyArea = (board: MatrixBoard, selected: [number, number]): MatrixBo
   return newBoard;
 };
 
+const openAll = (board: MatrixBoard): MatrixBoard => {
+  return board.map((row) => {
+    return row.map((cell) => {
+      return { ...cell, isOpen: true };
+    });
+  });
+}
+
+type GameState = 'playing' | 'win' | 'lose';
+
+const isWin = (board: MatrixBoard): boolean => {
+  return board.flat().every((cell) => {
+    return cell.isBomb || cell.isOpen; // 爆弾以外のマスが全て開いていたら勝利
+  });
+}
+
 const PlayGround = () => {
-  const [isOver, setIsOver] = useState(false);
+  const [gameState, setGameState] = useState<GameState>('playing');
   const [board, setBoard] = useState<MatrixBoard>(
     [...Array(64)].fill({
       isOpen: false,
@@ -154,30 +169,45 @@ const PlayGround = () => {
     setBoard(randomBoard);
   }, []);
 
+  // TODO: 画面更新前にアラートが出てしまうので修正する
+  useEffect(() => {
+    if (gameState === 'win') {
+      alert('🎉🎉🎉');
+    } else if (gameState === 'lose') {
+      alert('💣💥');
+    }
+  }, [gameState]);
+
   const handleClick = (index: number) => {
     const position = convertIndex(index);
     const targetCell = board[position[0]][position[1]];
 
     // ゲームが終了していたら何もしない
-    if (isOver) return;
+    if (gameState !== "playing") return;
     // すでに開いていたら何もしない
     if (targetCell.isOpen) return;
 
     // 爆弾を踏んだらゲームオーバー
     if (targetCell.isBomb) {
-      alert('💣💥');
-      const newBoard = board.flat().map((i) => ({ ...i, isOpen: true }));
-      setBoard(convert(newBoard));
-      setIsOver(true);
+      setBoard(openAll(board));
+      setGameState('lose');
       return;
     }
 
-    setBoard(targetCell.value === 0 ? openEmptyArea(board, position) : open(board, position));
+    const updatedBoard = targetCell.value === 0 ? openEmptyArea(board, position) : open(board, position)
+
+    if (isWin(updatedBoard)) {
+      setGameState('win');
+      setBoard(openAll(board));
+      return;
+    } else {
+      setBoard(updatedBoard);
+    }
   };
 
   return (
     <div>
-      <h1>Mine Sweeper</h1>
+      <h1>Mine Sweeper {gameState==="win" && "🎉🎉🎉"}</h1>
       <div className='grid grid-cols-8 bg-slate-700 gap-1 p-2'>
         {board.flat().map((cell, j) => {
           return <Cell key={j} cell={cell} handleClick={() => handleClick(j)}></Cell>;

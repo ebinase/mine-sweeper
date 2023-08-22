@@ -55,7 +55,10 @@ const Cell: React.FC<Props> = (props) => {
         setIsFlagged(!isFlagged);
       }}
     >
-      {cell.isOpen ? cell.value : isFlagged && '🚩'}
+      {cell.isOpen 
+      ? (cell.isBomb ? '💣' : cell.value)
+      : isFlagged && '🚩'
+      }
     </div>
   );
 };
