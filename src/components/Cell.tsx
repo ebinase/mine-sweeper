@@ -65,6 +65,8 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
       }
       onMouseDown={(e) => e.button !== RIGHT_CLICK_EVENT && handleMouseDown()} // 右クリックで開放してしまうのを防ぐ
       onMouseUp={(e) => e.button !== RIGHT_CLICK_EVENT && handleMouseUp()}
+      onTouchStart={handleMouseDown}
+      onTouchEnd={handleMouseUp}
       onContextMenu={(e) => {
         e.preventDefault();
         setIsFlagged(!isFlagged);
