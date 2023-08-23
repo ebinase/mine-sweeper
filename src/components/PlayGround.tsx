@@ -209,7 +209,7 @@ const PlayGround = () => {
   return (
     <div>
       <h1>Mine Sweeper - Classic {gameState === 'win' && '🎉🎉🎉'}</h1>
-      <div className='grid grid-cols-8 bg-slate-700 gap-2 p-2'>
+      <div className='w-[90vmin] h-[90vmin] md:w-[60vmin] md:h-[60vmin] grid grid-cols-8 grid-rows-[8] bg-slate-700 md:gap-2 gap-1 p-2'>
         {board.flat().map((cell, j) => {
           return (
             <Cell

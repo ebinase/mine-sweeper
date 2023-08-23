@@ -2,7 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Press_Start_2P } from 'next/font/google';
 
-const inter = Press_Start_2P({ weight: '400', preload: false });
+const ps2p = Press_Start_2P({ weight: '400', preload: false });
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='en'>
-      <body className={inter.className}>{children}</body>
+      <body className={ps2p.className}>{children}</body>
     </html>
   );
 }
