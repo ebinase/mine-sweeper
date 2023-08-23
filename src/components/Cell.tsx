@@ -69,7 +69,7 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
       onTouchEnd={(e) => {e.preventDefault(); handleMouseUp()}}
       onContextMenu={(e) => {
         e.preventDefault();
-        setIsFlagged(!isFlagged);
+        // setIsFlagged(!isFlagged);
       }}
     >
       {cell.isOpen ? (
