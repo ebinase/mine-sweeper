@@ -144,7 +144,7 @@ const openAll = (board: MatrixBoard): MatrixBoard => {
       return { ...cell, isOpen: true };
     });
   });
-}
+};
 
 type GameState = 'playing' | 'win' | 'lose';
 
@@ -152,7 +152,7 @@ const isWin = (board: MatrixBoard): boolean => {
   return board.flat().every((cell) => {
     return cell.isBomb || cell.isOpen; // 爆弾以外のマスが全て開いていたら勝利
   });
-}
+};
 
 const PlayGround = () => {
   const [gameState, setGameState] = useState<GameState>('playing');
@@ -183,7 +183,7 @@ const PlayGround = () => {
     const targetCell = board[position[0]][position[1]];
 
     // ゲームが終了していたら何もしない
-    if (gameState !== "playing") return;
+    if (gameState !== 'playing') return;
     // すでに開いていたら何もしない
     if (targetCell.isOpen) return;
 
@@ -194,7 +194,8 @@ const PlayGround = () => {
       return;
     }
 
-    const updatedBoard = targetCell.value === 0 ? openEmptyArea(board, position) : open(board, position)
+    const updatedBoard =
+      targetCell.value === 0 ? openEmptyArea(board, position) : open(board, position);
 
     if (isWin(updatedBoard)) {
       setGameState('win');
@@ -207,10 +208,17 @@ const PlayGround = () => {
 
   return (
     <div>
-      <h1>Mine Sweeper {gameState==="win" && "🎉🎉🎉"}</h1>
-      <div className='grid grid-cols-8 bg-slate-700 gap-1 p-2'>
+      <h1>Mine Sweeper - Classic {gameState === 'win' && '🎉🎉🎉'}</h1>
+      <div className='grid grid-cols-8 bg-slate-700 gap-2 p-2'>
         {board.flat().map((cell, j) => {
-          return <Cell key={j} cell={cell} handleClick={() => handleClick(j)} isFailed={gameState==="lose"}></Cell>;
+          return (
+            <Cell
+              key={j}
+              cell={cell}
+              handleClick={() => handleClick(j)}
+              isFailed={gameState === 'lose'}
+            ></Cell>
+          );
         })}
       </div>
     </div>

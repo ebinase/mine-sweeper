@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { CellData } from './PlayGround';
+import Image from 'next/image';
 
 type Props = {
   cell: CellData;
@@ -44,7 +45,7 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
   return (
     <div
       className={
-        'w-20 h-20 text-black flex justify-center items-center text-lg ' +
+        'w-20 h-20 text-black flex justify-center items-center text-lg shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] ' +
         (cell.isOpen ? (cell.isBomb ? 'bg-red-800 text-4xl' : 'bg-slate-50') : 'bg-slate-500')
       }
       onMouseDown={(e) => e.button !== RIGHT_CLICK_EVENT && handleMouseDown()} // 右クリックで開放してしまうのを防ぐ
@@ -54,10 +55,19 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
         setIsFlagged(!isFlagged);
       }}
     >
-      {cell.isOpen 
-      ? (cell.isBomb ? (isFailed ? '💥' : '💣') : cell.value)
-      : isFlagged && '🚩'
-      }
+      {cell.isOpen ? (
+        cell.isBomb ? (
+          isFailed ? (
+            <Image src='/mine_explode.svg' alt='red flag' width={30} height={30} />
+          ) : (
+            <Image src='/mine.svg' alt='red flag' width={30} height={30} />
+          )
+        ) : (
+          cell.value
+        )
+      ) : (
+        isFlagged && <Image src='/flag.png' alt='red flag' width={30} height={30} />
+      )}
     </div>
   );
 };
