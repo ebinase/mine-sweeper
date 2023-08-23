@@ -12,6 +12,21 @@ type Props = {
 
 const RIGHT_CLICK_EVENT = 2 as const;
 
+const COLOR_MAP: Record<number, string> = {
+  1: 'text-blue-600',
+  2: 'text-green-600',
+  3: 'text-red-600',
+  4: 'text-purple-600',
+  5: 'text-yellow-600',
+  6: 'text-pink-600',
+  7: 'text-slate-600',
+  8: 'text-gray-600',
+} as const;
+
+const resolveColor = (value: number) => {
+  return value in COLOR_MAP ? COLOR_MAP[value] : 'text-black';
+};
+
 const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
   const [isLongPress, setIsLongPress] = useState(false);
   const pressTimer = useRef<NodeJS.Timeout | null>(null);
@@ -58,12 +73,12 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
       {cell.isOpen ? (
         cell.isBomb ? (
           isFailed ? (
-            <Image src='/mine_explode.svg' alt='red flag' width={30} height={30} />
+            <Image src='/mine_explode.svg' alt='exploded mine' width={30} height={30} />
           ) : (
-            <Image src='/mine.svg' alt='red flag' width={30} height={30} />
+            <Image src='/mine.svg' alt='mine' width={30} height={30} />
           )
         ) : (
-          cell.value
+          <span className={resolveColor(cell.value as number)}>{cell.value !== 0 ? cell.value : ''}</span>
         )
       ) : (
         isFlagged && <Image src='/flag.png' alt='red flag' width={30} height={30} />

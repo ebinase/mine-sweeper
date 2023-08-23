@@ -3,8 +3,6 @@
 import { useEffect, useState } from 'react';
 import Cell from './Cell';
 
-// basic
-// TODO: CSS修正
 // グローバルメニュー
 // TODO: タイマー
 // TODO: リセットボタン
