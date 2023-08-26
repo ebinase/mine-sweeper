@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { CellData } from './PlayGround';
 import Image from 'next/image';
 
@@ -30,18 +30,13 @@ const resolveColor = (value: number) => {
 const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
   const [isLongPress, setIsLongPress] = useState(false);
   const pressTimer = useRef<NodeJS.Timeout | null>(null);
+  const lockTimer = useRef<NodeJS.Timeout | null>(null);
   // フラグの状態は左クリック長押しと右クリックで切り替える
   const [isFlagged, setIsFlagged] = useState(false);
 
   const [isLocked, setIsLocked] = useState(false);
 
   const handleMouseDown = (from: string) => {
-    if (isLocked) {
-      return;
-    } else {
-      setIsLocked(true);
-    }
-
     console.log('handleMouseDown:' + from);
     setIsLongPress(false);
     // 200ミリ秒後にsetIsLongPressをtrueに設定
@@ -71,9 +66,23 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
 
     // 長押し状態をリセットする
     setIsLongPress(false);
-    // ロックを解除する
-    setIsLocked(false);
+    // 0.1秒後にsetIsLockedをfalseに設定
+    lockTimer.current = setTimeout(() => {
+      console.log('handleMouseUp:0.1秒経過');
+      setIsLocked(false);
+    }
+    , 100);
   };
+
+  // lockTimerをクリアする
+  useEffect(() => {
+    return () => {
+      if (!isLocked && lockTimer.current) {
+        clearTimeout(lockTimer.current);
+        lockTimer.current = null;
+      }
+    };
+  }, [isLocked]);
 
   return (
     <div
