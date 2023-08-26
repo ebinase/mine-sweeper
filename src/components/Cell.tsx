@@ -33,7 +33,15 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
   // フラグの状態は左クリック長押しと右クリックで切り替える
   const [isFlagged, setIsFlagged] = useState(false);
 
+  const [isLocked, setIsLocked] = useState(false);
+
   const handleMouseDown = (from: string) => {
+    if (isLocked) {
+      return;
+    } else {
+      setIsLocked(true);
+    }
+
     console.log('handleMouseDown:' + from);
     setIsLongPress(false);
     // 200ミリ秒後にsetIsLongPressをtrueに設定
@@ -63,6 +71,8 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
 
     // 長押し状態をリセットする
     setIsLongPress(false);
+    // ロックを解除する
+    setIsLocked(false);
   };
 
   return (
@@ -71,15 +81,15 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
         'text-black flex justify-center items-center text-lg shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] aspect-square select-none ' +
         (cell.isOpen ? (cell.isBomb ? 'bg-red-800 text-4xl' : 'bg-slate-50') : 'bg-slate-500')
       }
-      onMouseDown={(e) => {e.preventDefault();e.button === 0 && handleMouseDown('onMouseDown')}}
-      onMouseUp={(e) => {e.preventDefault();e.button === 0 && handleMouseUp('onMouseUp')}}
-      onTouchStart={(e) => {e.preventDefault(); handleMouseDown('onTouchStart')}}
-      onTouchEnd={(e) => {e.preventDefault(); handleMouseUp('onTouchEnd')}}
+      onMouseDown={(e) => {e.button === 0 && handleMouseDown('onMouseDown')}}
+      onMouseUp={(e) => {e.button === 0 && handleMouseUp('onMouseUp')}}
+      onTouchStart={(e) => {handleMouseDown('onTouchStart')}}
+      onTouchEnd={(e) => {handleMouseUp('onTouchEnd')}}
       onContextMenu={(e) => {
         e.preventDefault();
-        // if (e.button === RIGHT_CLICK_EVENT) {
-        //   setIsFlagged(!isFlagged);
-        // }
+        if (e.button === RIGHT_CLICK_EVENT) {
+          setIsFlagged(!isFlagged);
+        }
       }}
     >
       {cell.isOpen ? (
