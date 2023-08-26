@@ -33,18 +33,20 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
   // フラグの状態は左クリック長押しと右クリックで切り替える
   const [isFlagged, setIsFlagged] = useState(false);
 
-  const handleMouseDown = () => {
-    console.log('handleMouseDown:' + Math.floor(Math.random() * 64));
+  const handleMouseDown = (from: string) => {
+    console.log('handleMouseDown:' + from);
     setIsLongPress(false);
     // 200ミリ秒後にsetIsLongPressをtrueに設定
     pressTimer.current = setTimeout(() => {
       console.log('handleMouseDown:200ミリ秒経過');
+      console.log('handleMouseDown:isFlagged:' + isFlagged+'→'+!isFlagged);
       setIsLongPress(true);
       setIsFlagged(!isFlagged); // 時間経過後に自動でフラグを切り替える
     }, 500);
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (from: string) => {
+    console.log('handleMouseUp:' + from);
     if (pressTimer.current) {
       clearTimeout(pressTimer.current);
       pressTimer.current = null;
@@ -69,10 +71,10 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
         'text-black flex justify-center items-center text-lg shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] aspect-square select-none ' +
         (cell.isOpen ? (cell.isBomb ? 'bg-red-800 text-4xl' : 'bg-slate-50') : 'bg-slate-500')
       }
-      onMouseDown={(e) => e.button !== RIGHT_CLICK_EVENT && handleMouseDown()} // 右クリックで開放してしまうのを防ぐ
-      onMouseUp={(e) => e.button !== RIGHT_CLICK_EVENT && handleMouseUp()}
-      onTouchStart={(e) => {e.preventDefault(); handleMouseDown()}}
-      onTouchEnd={(e) => {e.preventDefault(); handleMouseUp()}}
+      onMouseDown={(e) => e.button !== RIGHT_CLICK_EVENT && handleMouseDown('onMouseDown')} // 右クリックで開放してしまうのを防ぐ
+      onMouseUp={(e) => e.button !== RIGHT_CLICK_EVENT && handleMouseUp('onMouseUp')}
+      onTouchStart={(e) => {e.preventDefault(); handleMouseDown('onTouchStart')}}
+      onTouchEnd={(e) => {e.preventDefault(); handleMouseUp('onTouchEnd')}}
       onContextMenu={(e) => {
         e.preventDefault();
         // if (e.button === RIGHT_CLICK_EVENT) {
