@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { CellData } from './PlayGround';
 import Image from 'next/image';
-import { useLongPress } from 'react-use';
 
 type Props = {
   cell: CellData;
@@ -29,19 +28,61 @@ const resolveColor = (value: number) => {
 };
 
 const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
-    // フラグの状態は左クリック長押しと右クリックで切り替える
+  const [isLongPress, setIsLongPress] = useState(false);
+  const pressTimer = useRef<NodeJS.Timeout | null>(null);
+  const lockTimer = useRef<NodeJS.Timeout | null>(null);
+  // フラグの状態は左クリック長押しと右クリックで切り替える
   const [isFlagged, setIsFlagged] = useState(false);
 
-const onLongPress = () => {
-    console.log('onLongPress');
-    setIsFlagged(!isFlagged);
+  const [isLocked, setIsLocked] = useState(false);
+
+  const handleMouseDown = (from: string) => {
+    console.log('handleMouseDown:' + from);
+    setIsLongPress(false);
+    // 200ミリ秒後にsetIsLongPressをtrueに設定
+    pressTimer.current = setTimeout(() => {
+      console.log('handleMouseDown:200ミリ秒経過');
+      console.log('handleMouseDown:isFlagged:' + isFlagged+'→'+!isFlagged);
+      setIsLongPress(true);
+      setIsFlagged(!isFlagged); // 時間経過後に自動でフラグを切り替える
+    }, 500);
   };
 
-  const defaultOptions = {
-    isPreventDefault: true, // クリックイベントを使用するため
-    delay: 200,
+  const handleMouseUp = (from: string) => {
+    console.log('handleMouseUp:' + from);
+    if (pressTimer.current) {
+      clearTimeout(pressTimer.current);
+      pressTimer.current = null;
+    }
+
+    console.log('handleMouseUp:' + (isLongPress ? 'long press' : 'click'));
+    console.log('isFlagged:'+isFlagged);
+
+    if (!isLongPress) {
+      // 長押しされていた場合はクリックとはみなさない
+      console.log('click');
+      handleClick();
+    }
+
+    // 長押し状態をリセットする
+    setIsLongPress(false);
+    // 0.1秒後にsetIsLockedをfalseに設定
+    lockTimer.current = setTimeout(() => {
+      console.log('handleMouseUp:0.1秒経過');
+      setIsLocked(false);
+    }
+    , 100);
   };
-  const longPressEvent = useLongPress(onLongPress, defaultOptions);
+
+  // lockTimerをクリアする
+  useEffect(() => {
+    return () => {
+      if (lockTimer.current) {
+        clearTimeout(lockTimer.current);
+        lockTimer.current = null;
+      }
+    };
+  }, []);
 
   return (
     <div
@@ -49,8 +90,8 @@ const onLongPress = () => {
         'text-black flex justify-center items-center text-lg shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] aspect-square select-none ' +
         (cell.isOpen ? (cell.isBomb ? 'bg-red-800 text-4xl' : 'bg-slate-50') : 'bg-slate-500')
       }
-      onClick={handleClick}
-      {...longPressEvent}
+      onPointerDown={(e) => {e.button === 0 && handleMouseDown('')}}
+      onPointerUp={(e) => {e.button === 0 && handleMouseUp('')}}
       onContextMenu={(e) => {
         e.preventDefault();
         if (e.button === RIGHT_CLICK_EVENT) {
