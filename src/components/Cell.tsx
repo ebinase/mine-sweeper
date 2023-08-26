@@ -34,6 +34,7 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
   const [isFlagged, setIsFlagged] = useState(false);
 
   const handleMouseDown = () => {
+    console.log('handleMouseDown:' + Math.floor(Math.random() * 64));
     setIsLongPress(false);
     // 200ミリ秒後にsetIsLongPressをtrueに設定
     pressTimer.current = setTimeout(() => {
@@ -50,6 +51,7 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
     }
 
     console.log('handleMouseUp:' + (isLongPress ? 'long press' : 'click'));
+    console.log('isFlagged:'+isFlagged);
 
     if (!isLongPress) {
       // 長押しされていた場合はクリックとはみなさない
@@ -60,8 +62,6 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
     // 長押し状態をリセットする
     setIsLongPress(false);
   };
-
-  console.log('isFlagged:'+isFlagged);
 
   return (
     <div
