@@ -38,7 +38,7 @@ const onLongPress = () => {
   };
 
   const defaultOptions = {
-    isPreventDefault: false, // クリックイベントを使用するため
+    isPreventDefault: true, // クリックイベントを使用するため
     delay: 200,
   };
   const longPressEvent = useLongPress(onLongPress, defaultOptions);
