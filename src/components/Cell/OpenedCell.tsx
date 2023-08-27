@@ -32,15 +32,27 @@ type CountContent = {
 type Content = BombContent | CountContent;
 
 const Bomb = ({ isExploded }: { isExploded: boolean }) => {
-  return isExploded ? (
-    <Image src='/mine_explode.svg' alt='exploded mine' width={30} height={30} />
-  ) : (
-    <Image src='/mine.svg' alt='mine' width={30} height={30} />
+  return (
+    <div
+      className={`h-full w-full flex justify-center items-center ${
+        isExploded ? 'bg-red-800' : 'bg-slate-400'
+      }`}
+    >
+      {isExploded ? (
+        <Image src='/mine_explode.svg' alt='exploded mine' width={30} height={30} />
+      ) : (
+        <Image src='/mine.svg' alt='mine' width={30} height={30} />
+      )}
+    </div>
   );
 };
 
 const Count = ({ value }: { value: number }) => {
-  return <span className={resolveColor(value)}>{value !== 0 ? value : ''}</span>;
+  return (
+    <div className='h-full w-full flex justify-center items-center text-lg'>
+      <span className={resolveColor(value)}>{value !== 0 ? value : ''}</span>
+    </div>
+  );
 };
 
 const OpenedCell: React.FC<{ cell: CellData; isExploded: boolean }> = ({ cell, isExploded }) => {
@@ -49,12 +61,7 @@ const OpenedCell: React.FC<{ cell: CellData; isExploded: boolean }> = ({ cell, i
     ? { type: 'bomb', isExploded }
     : { type: 'count', value: cell.value as number };
   return (
-    <div
-      className={
-        'h-full w-full flex justify-center items-center text-lg aspect-square select-none ' +
-        (content.type === 'bomb' && content.isExploded ? 'bg-red-800 text-4xl' : 'bg-slate-50')
-      }
-    >
+    <div className={'h-full w-full bg-slate-50'}>
       {content.type === 'bomb' ? (
         <Bomb isExploded={content.isExploded} />
       ) : (
