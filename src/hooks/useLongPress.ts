@@ -17,7 +17,11 @@ interface Options {
 const useLongPress = (
   onLongPress: (e?: PointerEvent) => void,
   onclick?: (e?: PointerEvent) => void,
-  { shouldPreventDefault = true, delay = 200, targetButton = BUTTON_NUMBERS.LEFT_CLICK }: Options = {},
+  {
+    shouldPreventDefault = true,
+    delay = 200,
+    targetButton = BUTTON_NUMBERS.LEFT_CLICK,
+  }: Options = {},
 ) => {
   const [isLongPress, setIsLongPress] = useState(false);
   const pressTimer = useRef<number | undefined>(undefined);
@@ -45,10 +49,8 @@ const useLongPress = (
     if (pressTimer.current) {
       clearTimer();
     }
-    console.log(isLongPress, onclick);
     // 長押しでなければクリック時の処理を実行
     if (!isLongPress && !!onclick) {
-        console.log('click');
       onclick();
     }
   };

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Cell from './Cell/Cell';
+import Cell from './Cell';
 
 // グローバルメニュー
 // TODO: タイマー
