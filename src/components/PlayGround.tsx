@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Cell from './Cell';
+import { getRandomElements } from '@/functions/random';
 
 // グローバルメニュー
 // TODO: タイマー
@@ -20,8 +21,6 @@ const directions = [
   [1, 1],
 ];
 
-const random = () => Math.floor(Math.random() * 64);
-
 const isInside = (position: Array<number>) => {
   const rows = 8;
   const cols = 8;
@@ -29,13 +28,11 @@ const isInside = (position: Array<number>) => {
   return row >= 0 && row < rows && col >= 0 && col < cols;
 };
 
-const bombPositions = Array(10)
-  .fill(null)
-  .map(() => random());
-
 export type CellData = { isOpen: boolean; isBomb: boolean; value: number | null };
 type Board = Array<CellData>;
 type MatrixBoard = CellData[][];
+
+const bombPositions = getRandomElements([...Array(64)].map((_, j) => j), 10);
 
 const initialBoard: Board = [...Array(64)].map((_, j) => {
   const isBomb = bombPositions.includes(j);
