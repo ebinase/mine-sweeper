@@ -5,13 +5,13 @@ import { useRef, useState } from 'react';
 // 左クリック、タップのイベント番号
 export const BUTTON_NUMBERS = {
   LEFT_CLICK: 0,
-  RIGHT_CLICK: 0,
+  RIGHT_CLICK: 2,
 } as const;
 
 interface Options {
-  shouldPreventDefault?: boolean;
-  delay?: number;
-  targetButton?: number;
+  shouldPreventDefault?: boolean; // デフォルトのイベントをキャンセルするかどうか
+  delay?: number; // 長押しの時間
+  targetButton?: number; // 長押しを検知する対象のボタン
 }
 
 const useLongPress = (
@@ -28,7 +28,7 @@ const useLongPress = (
   };
 
   const handlePointerDown = (e: PointerEvent) => {
-    if (e.button === targetButton) return;
+    if (e.button !== targetButton) return;
 
     setIsLongPress(false);
     // 200ミリ秒後にsetIsLongPressをtrueに設定
@@ -39,14 +39,16 @@ const useLongPress = (
   };
 
   const handlePointerUp = (e: PointerEvent) => {
-    if (e.button === targetButton) return;
+    if (e.button !== targetButton) return;
 
     // フラグ切り替え処理ごとタイマーを解除する
     if (pressTimer.current) {
       clearTimer();
     }
+    console.log(isLongPress, onclick);
     // 長押しでなければクリック時の処理を実行
     if (!isLongPress && !!onclick) {
+        console.log('click');
       onclick();
     }
   };
