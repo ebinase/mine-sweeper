@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Cell from './Cell';
 import { getRandomElements } from '@/functions/random';
+import confetti from 'canvas-confetti';
 
 // グローバルメニュー
 // TODO: タイマー
@@ -169,9 +170,7 @@ const PlayGround = () => {
 
   // TODO: 画面更新前にアラートが出てしまうので修正する
   useEffect(() => {
-    if (gameState === 'win') {
-      alert('🎉🎉🎉');
-    } else if (gameState === 'lose') {
+    if (gameState === 'lose') {
       alert('💣💥');
     }
   }, [gameState]);
@@ -204,6 +203,33 @@ const PlayGround = () => {
     }
   };
 
+  type Side = 'L' | 'R';
+  useEffect(() => {
+    if (gameState !== 'win') return;
+
+    const showConfetti = (side: Side) => {
+      confetti({
+        // 激しいアニメーションが苦手なユーザーに対しては無効にする
+        // See https://developer.mozilla.org/ja/docs/Web/CSS/@media/prefers-reduced-motion
+        disableForReducedMotion: true,
+        zIndex: -100,
+        origin: {
+          x: (Math.floor(Math.random() * 7) + 1) / 10 + (side === 'L' ? -0.3 : 0.3),
+          y: Math.random() - 0.3,
+        },
+        startVelocity: 20,
+        ticks: 400,
+        spread: 360,
+      });
+    };
+
+    showConfetti('L');
+    showConfetti('R');
+    (function loop(side: Side = 'L') {
+      showConfetti(side);
+      setTimeout(() => loop(side === 'L' ? 'R' : 'L'), 2500 + Math.random() * 500);
+    })();
+  }, [gameState]);
   return (
     <div>
       <h1>Mine Sweeper - Classic {gameState === 'win' && '🎉🎉🎉'}</h1>
