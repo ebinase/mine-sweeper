@@ -7,8 +7,7 @@ const createJestConfig = nextJest({
 });
 
 // Jest に渡すカスタム設定を追加する
-const customJestConfig = {
-};
+const customJestConfig = {};
 
 // createJestConfig は、非同期で next/jest が Next.js の設定を読み込めるようにするため、下記のようにエクスポートします
 module.exports = createJestConfig(customJestConfig);

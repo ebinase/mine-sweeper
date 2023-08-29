@@ -32,7 +32,10 @@ export type CellData = { isOpen: boolean; isBomb: boolean; value: number | null 
 type Board = Array<CellData>;
 type MatrixBoard = CellData[][];
 
-const bombPositions = getRandomElements([...Array(64)].map((_, j) => j), 10);
+const bombPositions = getRandomElements(
+  [...Array(64)].map((_, j) => j),
+  10,
+);
 
 const initialBoard: Board = [...Array(64)].map((_, j) => {
   const isBomb = bombPositions.includes(j);
