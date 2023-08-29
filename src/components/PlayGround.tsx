@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Cell from './Cell';
 import { getRandomElements } from '@/functions/random';
+import confetti from 'canvas-confetti';
 
 // グローバルメニュー
 // TODO: タイマー
@@ -32,23 +33,28 @@ export type CellData = { isOpen: boolean; isBomb: boolean; value: number | null 
 type Board = Array<CellData>;
 type MatrixBoard = CellData[][];
 
-const bombPositions = getRandomElements(
-  [...Array(64)].map((_, j) => j),
-  10,
-);
+const generateRandomBoard = (size: number, bombs: number): MatrixBoard => {
+  const initialBoard: Board = [...Array(size)].map((_, j) => {
+    return {
+      isOpen: false,
+      isBomb: false,
+      value: null,
+    };
+  });
 
-const initialBoard: Board = [...Array(64)].map((_, j) => {
-  const isBomb = bombPositions.includes(j);
-  return {
-    isOpen: false,
-    isBomb,
-    value: null,
-  };
-});
+  const bombPositions = getRandomElements(
+    [...Array(size)].map((_, j) => j),
+    bombs,
+  );
 
-const generateRandomBoard = () => {
-  const matrix = convert(initialBoard);
-  return getBombCount(matrix);
+  const boardWithBombs = initialBoard.map((cell, j) => {
+    return {
+      ...cell,
+      isBomb: bombPositions.includes(j),
+    };
+  });
+
+  return getBombCount(convert(boardWithBombs));
 };
 
 // 一次元の盤面の配列を二次元に変換する
@@ -153,28 +159,14 @@ const isWin = (board: MatrixBoard): boolean => {
 };
 
 const PlayGround = () => {
+  const [boardSize, bombs] = [64, 10];
   const [gameState, setGameState] = useState<GameState>('playing');
-  const [board, setBoard] = useState<MatrixBoard>(
-    [...Array(64)].fill({
-      isOpen: false,
-      isBomb: false,
-      value: 1,
-    } as CellData),
-  );
+  const [board, setBoard] = useState<MatrixBoard>(generateRandomBoard(boardSize, bombs));
 
-  useEffect(() => {
-    const randomBoard = generateRandomBoard();
-    setBoard(randomBoard);
-  }, []);
-
-  // TODO: 画面更新前にアラートが出てしまうので修正する
-  useEffect(() => {
-    if (gameState === 'win') {
-      alert('🎉🎉🎉');
-    } else if (gameState === 'lose') {
-      alert('💣💥');
-    }
-  }, [gameState]);
+  const init = () => {
+    setBoard(generateRandomBoard(boardSize, bombs));
+    setGameState('playing');
+  };
 
   const handleClick = (index: number) => {
     const position = convertIndex(index);
@@ -204,10 +196,47 @@ const PlayGround = () => {
     }
   };
 
+  type Side = 'L' | 'R';
+  useEffect(() => {
+    if (gameState !== 'win') return;
+
+    const showConfetti = (side: Side) => {
+      confetti({
+        // 激しいアニメーションが苦手なユーザーに対しては無効にする
+        // See https://developer.mozilla.org/ja/docs/Web/CSS/@media/prefers-reduced-motion
+        disableForReducedMotion: true,
+        zIndex: -100,
+        origin: {
+          x: (Math.floor(Math.random() * 7) + 1) / 10 + (side === 'L' ? -0.3 : 0.3),
+          y: Math.random() - 0.3,
+        },
+        startVelocity: 20,
+        ticks: 400,
+        spread: 360,
+      });
+    };
+
+    showConfetti('L');
+    showConfetti('R');
+    const timerId = setInterval(() => {
+      setTimeout(() => {
+        showConfetti('L');
+      }, Math.random() * 1500);
+      setTimeout(() => {
+        showConfetti('R');
+      }, Math.random() * 1500);
+    }, 3000);
+
+    return () => clearInterval(timerId);
+  }, [gameState]);
   return (
     <div>
-      <h1>Mine Sweeper - Classic {gameState === 'win' && '🎉🎉🎉'}</h1>
-      <div className='w-[90vmin] h-[90vmin] md:w-[60vmin] md:h-[60vmin] grid grid-cols-8 grid-rows-[8] bg-slate-700 md:gap-2 gap-1 p-2'>
+      <h1>Mine Sweeper - Classic</h1>
+      <div
+        className={`${
+          gameState === 'lose' ? 'bg-red-950 ' : 'bg-slate-700'
+        } w-[90vmin] h-[90vmin] md:w-[60vmin] md:h-[60vmin] grid grid-cols-8 grid-rows-[8] md:gap-2 gap-1 p-2`}
+      >
         {board.flat().map((cell, j) => {
           return (
             <Cell
@@ -218,6 +247,16 @@ const PlayGround = () => {
             ></Cell>
           );
         })}
+      </div>
+      <div className='flex flex-col items-center py-10 gap-3'>
+        {gameState !== 'playing' && (
+          <button
+            className='bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] text-white px-3 py-1 text-sm'
+            onClick={init}
+          >
+            NEW GAME
+          </button>
+        )}
       </div>
     </div>
   );
