@@ -218,10 +218,16 @@ const PlayGround = () => {
 
     showConfetti('L');
     showConfetti('R');
-    (function loop(side: Side = 'L') {
-      showConfetti(side);
-      setTimeout(() => loop(side === 'L' ? 'R' : 'L'), 2500 + Math.random() * 500);
-    })();
+    const timerId = setInterval(() => {
+      setTimeout(() => {
+        showConfetti('L');
+      }, Math.random() * 1500);
+      setTimeout(() => {
+        showConfetti('R');
+      }, Math.random() * 1500);
+    }, 3000);
+
+    return () => clearInterval(timerId);
   }, [gameState]);
   return (
     <div>
