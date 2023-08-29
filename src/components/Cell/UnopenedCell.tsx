@@ -13,7 +13,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick }) => {
 
   // マスの開放、長押しでフラグでのフラグの切り替え
   const handleLongPress = () => setIsFlagged(!isFlagged);
-  const handleClickWithFlag = () => isFlagged ? setIsFlagged(false) : handleClick(); // フラグが立っているときは開放しない
+  const handleClickWithFlag = () => (isFlagged ? setIsFlagged(false) : handleClick()); // フラグが立っているときは開放しない
   const longPressEvent = useLongPress(handleLongPress, handleClickWithFlag);
   // 右クリックでフラグを切り替える
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

@@ -41,7 +41,7 @@ const Bomb = ({ isExploded }: { isExploded: boolean }) => {
       {isExploded ? (
         <Image src='/mine_explode.svg' alt='exploded mine' width={30} height={30} />
       ) : (
-        <Image src='/mine.svg' alt='mine' width={30} height={30} />
+        <Image src='/mine.svg' alt='mine' width={25} height={25} />
       )}
     </div>
   );
