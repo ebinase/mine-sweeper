@@ -168,13 +168,6 @@ const PlayGround = () => {
     setBoard(randomBoard);
   }, []);
 
-  // TODO: 画面更新前にアラートが出てしまうので修正する
-  useEffect(() => {
-    if (gameState === 'lose') {
-      alert('💣💥');
-    }
-  }, [gameState]);
-
   const handleClick = (index: number) => {
     const position = convertIndex(index);
     const targetCell = board[position[0]][position[1]];
@@ -233,7 +226,7 @@ const PlayGround = () => {
   return (
     <div>
       <h1>Mine Sweeper - Classic {gameState === 'win' && '🎉🎉🎉'}</h1>
-      <div className='w-[90vmin] h-[90vmin] md:w-[60vmin] md:h-[60vmin] grid grid-cols-8 grid-rows-[8] bg-slate-700 md:gap-2 gap-1 p-2'>
+      <div className={`${gameState === 'lose' ? 'bg-red-950 ' : 'bg-slate-700'} w-[90vmin] h-[90vmin] md:w-[60vmin] md:h-[60vmin] grid grid-cols-8 grid-rows-[8] md:gap-2 gap-1 p-2`}>
         {board.flat().map((cell, j) => {
           return (
             <Cell
