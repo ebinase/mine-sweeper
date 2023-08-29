@@ -33,23 +33,28 @@ export type CellData = { isOpen: boolean; isBomb: boolean; value: number | null 
 type Board = Array<CellData>;
 type MatrixBoard = CellData[][];
 
-const bombPositions = getRandomElements(
-  [...Array(64)].map((_, j) => j),
-  10,
-);
+const generateRandomBoard = (size: number, bombs: number): MatrixBoard => {
+  const initialBoard: Board = [...Array(size)].map((_, j) => {
+    return {
+      isOpen: false,
+      isBomb: false,
+      value: null,
+    };
+  });
 
-const initialBoard: Board = [...Array(64)].map((_, j) => {
-  const isBomb = bombPositions.includes(j);
-  return {
-    isOpen: false,
-    isBomb,
-    value: null,
-  };
-});
+  const bombPositions = getRandomElements(
+    [...Array(size)].map((_, j) => j),
+    bombs,
+  );
 
-const generateRandomBoard = () => {
-  const matrix = convert(initialBoard);
-  return getBombCount(matrix);
+  const boardWithBombs = initialBoard.map((cell, j) => {
+    return {
+      ...cell,
+      isBomb: bombPositions.includes(j),
+    };
+  });
+
+  return getBombCount(convert(boardWithBombs));
 };
 
 // 一次元の盤面の配列を二次元に変換する
@@ -154,19 +159,14 @@ const isWin = (board: MatrixBoard): boolean => {
 };
 
 const PlayGround = () => {
+  const [boardSize, bombs] = [64, 10];
   const [gameState, setGameState] = useState<GameState>('playing');
-  const [board, setBoard] = useState<MatrixBoard>(
-    [...Array(64)].fill({
-      isOpen: false,
-      isBomb: false,
-      value: 1,
-    } as CellData),
-  );
+  const [board, setBoard] = useState<MatrixBoard>(generateRandomBoard(boardSize, bombs));
 
-  useEffect(() => {
-    const randomBoard = generateRandomBoard();
-    setBoard(randomBoard);
-  }, []);
+  const init = () => {
+    setBoard(generateRandomBoard(boardSize, bombs));
+    setGameState('playing');
+  };
 
   const handleClick = (index: number) => {
     const position = convertIndex(index);
@@ -225,8 +225,12 @@ const PlayGround = () => {
   }, [gameState]);
   return (
     <div>
-      <h1>Mine Sweeper - Classic {gameState === 'win' && '🎉🎉🎉'}</h1>
-      <div className={`${gameState === 'lose' ? 'bg-red-950 ' : 'bg-slate-700'} w-[90vmin] h-[90vmin] md:w-[60vmin] md:h-[60vmin] grid grid-cols-8 grid-rows-[8] md:gap-2 gap-1 p-2`}>
+      <h1>Mine Sweeper - Classic</h1>
+      <div
+        className={`${
+          gameState === 'lose' ? 'bg-red-950 ' : 'bg-slate-700'
+        } w-[90vmin] h-[90vmin] md:w-[60vmin] md:h-[60vmin] grid grid-cols-8 grid-rows-[8] md:gap-2 gap-1 p-2`}
+      >
         {board.flat().map((cell, j) => {
           return (
             <Cell
@@ -237,6 +241,16 @@ const PlayGround = () => {
             ></Cell>
           );
         })}
+      </div>
+      <div className='flex flex-col items-center py-10 gap-3'>
+        {gameState !== 'playing' && (
+          <button
+            className='bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] text-white px-3 py-1 text-sm'
+            onClick={init}
+          >
+            NEW GAME
+          </button>
+        )}
       </div>
     </div>
   );
