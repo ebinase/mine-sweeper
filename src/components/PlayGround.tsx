@@ -233,9 +233,9 @@ const PlayGround = () => {
     <div>
       <h1>Mine Sweeper - Classic</h1>
       <div
-        className={`${
-          gameState === 'lose' ? 'bg-red-950 ' : 'bg-slate-700'
-        } w-[90vmin] h-[90vmin] md:w-[60vmin] md:h-[60vmin] grid grid-cols-8 grid-rows-[8] md:gap-2 gap-1 p-2`}
+        className={
+          'bg-slate-700 w-[90vmin] h-[90vmin] md:w-[60vmin] md:h-[60vmin] grid grid-cols-8 grid-rows-[8] md:gap-2 gap-1 p-2'
+        }
       >
         {board.flat().map((cell, j) => {
           return (
