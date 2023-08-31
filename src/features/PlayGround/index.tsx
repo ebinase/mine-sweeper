@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { getRandomElements } from '@/functions/random';
-import confetti from 'canvas-confetti';
 import Cell from './components/Cell';
+import useConfetti from '@/hooks/useConfetti';
 
 // グローバルメニュー
 // TODO: タイマー
@@ -162,6 +162,7 @@ const PlayGround = () => {
   const [boardSize, bombs] = [64, 10];
   const [gameState, setGameState] = useState<GameState>('playing');
   const [board, setBoard] = useState<MatrixBoard>(generateRandomBoard(boardSize, bombs));
+  const confetti = useConfetti();
 
   const init = () => {
     setBoard(generateRandomBoard(boardSize, bombs));
@@ -196,39 +197,23 @@ const PlayGround = () => {
     }
   };
 
-  type Side = 'L' | 'R';
   useEffect(() => {
     if (gameState !== 'win') return;
 
-    const showConfetti = (side: Side) => {
-      confetti({
-        // 激しいアニメーションが苦手なユーザーに対しては無効にする
-        // See https://developer.mozilla.org/ja/docs/Web/CSS/@media/prefers-reduced-motion
-        disableForReducedMotion: true,
-        zIndex: -100,
-        origin: {
-          x: (Math.floor(Math.random() * 7) + 1) / 10 + (side === 'L' ? -0.3 : 0.3),
-          y: Math.random() - 0.3,
-        },
-        startVelocity: 20,
-        ticks: 400,
-        spread: 360,
-      });
-    };
+    confetti.showBoth();
 
-    showConfetti('L');
-    showConfetti('R');
     const timerId = setInterval(() => {
       setTimeout(() => {
-        showConfetti('L');
+        confetti.showLeft();
       }, Math.random() * 1500);
       setTimeout(() => {
-        showConfetti('R');
+        confetti.showRight();
       }, Math.random() * 1500);
     }, 3000);
 
     return () => clearInterval(timerId);
-  }, [gameState]);
+  }, [gameState, confetti]);
+  
   return (
     <div>
       <h1>Mine Sweeper - Classic</h1>
