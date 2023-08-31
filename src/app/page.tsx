@@ -1,4 +1,4 @@
-import PlayGround from '@/components/PlayGround';
+import PlayGround from "@/features/PlayGround";
 
 export default function Home() {
   return (

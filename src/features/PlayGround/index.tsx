@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Cell from './Cell';
 import { getRandomElements } from '@/functions/random';
 import confetti from 'canvas-confetti';
+import Cell from './components/Cell';
 
 // グローバルメニュー
 // TODO: タイマー

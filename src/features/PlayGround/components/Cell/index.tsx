@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CellData } from '../PlayGround';
+import { CellData } from '../..';
 import OpenedCell from './OpenedCell';
 import UnopenedCell from './UnopenedCell';
 

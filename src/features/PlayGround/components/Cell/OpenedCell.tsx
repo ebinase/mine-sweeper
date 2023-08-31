@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { CellData } from '../PlayGround';
+import { CellData } from '../..';
 
 const COLOR_MAP: Record<number, string> = {
   1: 'text-blue-600',
