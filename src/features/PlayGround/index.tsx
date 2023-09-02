@@ -13,7 +13,7 @@ import usePlayGround from './hooks/usePlayGround';
 
 const PlayGround = () => {
   const settings = { rows: 8, cols: 8, mines: 10 };
-  const { board, gameState, init, openCell } = usePlayGround(settings);
+  const { board, gameState, init, open } = usePlayGround(settings);
   const confetti = useConfetti();
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const PlayGround = () => {
             <Cell
               key={j}
               cell={cell}
-              handleClick={() => openCell(j)}
+              handleClick={() => open(j)}
               isFailed={gameState === 'lose'}
             ></Cell>
           );
