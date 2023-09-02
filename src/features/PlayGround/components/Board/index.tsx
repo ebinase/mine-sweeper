@@ -1,5 +1,16 @@
 import { getRandomElements } from '@/functions/random';
+import type { Either } from '@/types/Either';
 import { useState } from 'react';
+
+export type BoardConfig = {
+  rows: number;
+  cols: number;
+  mines: number;
+};
+
+type CellData = { isOpen: boolean; isBomb: boolean; value: number | null };
+type Board = Array<CellData>;
+export type MatrixBoard = CellData[][];
 
 const directions = [
   [-1, -1],
@@ -18,10 +29,6 @@ const isInside = (position: Array<number>) => {
   const [row, col] = position;
   return row >= 0 && row < rows && col >= 0 && col < cols;
 };
-
-export type CellData = { isOpen: boolean; isBomb: boolean; value: number | null };
-type Board = Array<CellData>;
-export type MatrixBoard = CellData[][];
 
 const generateRandomBoard = (size: number, bombs: number): MatrixBoard => {
   const initialBoard: Board = [...Array(size)].map((_, j) => {
@@ -139,15 +146,7 @@ const openAll = (board: MatrixBoard): MatrixBoard => {
   });
 };
 
-export type BoardConfig = {
-  rows: number;
-  cols: number;
-  mines: number;
-};
-
 type Options = BoardConfig;
-
-type Either<L, R> = { kind: 'Left'; value: L } | { kind: 'Right'; value: R };
 
 const useBoard = ({ rows, cols, mines }: Options) => {
   const [board, setBoard] = useState<MatrixBoard>(generateRandomBoard(rows * cols, mines));
