@@ -9,7 +9,13 @@ export type BoardConfig = {
   mines: number;
 };
 
-export type CellData = { id: number; isOpen: boolean; isMine: boolean; value: number | null };
+export type CellData = {
+  id: number;
+  isOpen: boolean;
+  isMine: boolean;
+  isFlagged: boolean;
+  value: number | null;
+};
 // type Board = Array<CellData>;
 export type Board = CellData[][];
 
@@ -19,6 +25,7 @@ const generateRandomBoard = ({ rows, cols, mines }: BoardConfig): Board => {
       id: j,
       isOpen: false,
       isMine: false,
+      isFlagged: false,
       value: null,
     };
   });
@@ -136,7 +143,20 @@ const useBoard = (options: Options) => {
     return { kind: 'Right', value: updatedBoard };
   };
 
-  return { board, initBoard, openCell, openAll: () => setBoard(openAll(board)) };
+  const toggleFlag = (cellId: number): void => {
+    const updatedBoard = board.map((row) => {
+      return row.map((cell) => {
+        if (cell.id === cellId) {
+          return { ...cell, isFlagged: !cell.isFlagged };
+        }
+        return cell;
+      });
+    });
+
+    setBoard(updatedBoard);
+  };
+
+  return { board, initBoard, openCell, openAll: () => setBoard(openAll(board)), toggleFlag };
 };
 
 export default useBoard;

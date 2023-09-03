@@ -13,7 +13,7 @@ import Image from 'next/image';
 // TODO: 難易度選択
 
 const PlayGround = () => {
-  const { board, gameState, reset, open, getConfig } = usePlayGround();
+  const { board, gameState, reset, open, getConfig, countFlags, toggleFlag } = usePlayGround();
   const confetti = useConfetti();
 
   useEffect(() => {
@@ -37,7 +37,11 @@ const PlayGround = () => {
     <div>
       <header className='flex justify-between items-center py-0.5'>
         <h1>Mine Sweeper</h1>
-        <div>
+        <div className='flex gap-2'>
+          <div className='flex items-center'>
+            <Image src='/flag.png' alt='flag' width={15} height={15} />
+            <span className='text-xs'>×{countFlags()}</span>
+          </div>
           <div className='flex items-center'>
             <Image src='/mine.svg' alt='exploded mine' width={20} height={20} />
             <span className='text-xs'>×{getConfig().mines}</span>
@@ -58,6 +62,7 @@ const PlayGround = () => {
               cell={cell}
               handleClick={open}
               isFailed={gameState === 'lose'}
+              toggleFlag={toggleFlag}
             ></Cell>
           );
         })}

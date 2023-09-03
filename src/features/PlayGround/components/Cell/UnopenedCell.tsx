@@ -2,25 +2,23 @@
 
 import useLongPress from '@/hooks/useLongPress';
 import Image from 'next/image';
-import { useState } from 'react';
 import { CellData } from '../../hooks/useBoard';
 
 type Props = {
   handleClick: (id: number) => void;
   cell: CellData;
+  toggleFlag: (id: number) => void;
 };
 
-const UnopenedCell: React.FC<Props> = ({ handleClick, cell }) => {
-  const [isFlagged, setIsFlagged] = useState(false);
-
+const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag }) => {
   // マスの開放、長押しでフラグでのフラグの切り替え
-  const handleLongPress = () => setIsFlagged(!isFlagged);
-  const handleClickWithFlag = () => (isFlagged ? setIsFlagged(false) : handleClick(cell.id)); // フラグが立っているときは開放しない
+  const handleLongPress = () => toggleFlag(cell.id);
+  const handleClickWithFlag = () => (cell.isFlagged ? toggleFlag(cell.id) : handleClick(cell.id)); // フラグが立っているときは開放しない
   const longPressEvent = useLongPress(handleLongPress, handleClickWithFlag);
   // 右クリックでフラグを切り替える
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
-    setIsFlagged(!isFlagged);
+    toggleFlag(cell.id);
   };
   return (
     <div
@@ -28,7 +26,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell }) => {
       {...longPressEvent}
       onContextMenu={handleContextMenu}
     >
-      {isFlagged && <Image src='/flag.png' alt='red flag' width={30} height={30} />}
+      {cell.isFlagged && <Image src='/flag.png' alt='red flag' width={30} height={30} />}
     </div>
   );
 };

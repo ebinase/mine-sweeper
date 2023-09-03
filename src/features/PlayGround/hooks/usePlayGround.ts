@@ -25,7 +25,7 @@ const gameModeToOptions = (gameMode: GameMode): BoardConfig => {
 const usePlayGround = () => {
   const [mode, setMode] = useState<GameMode>('easy');
   const [gameState, setGameState] = useState<GameState>('playing');
-  const { board, initBoard, openCell, openAll } = useBoard(gameModeToOptions(mode));
+  const { board, initBoard, openCell, openAll, toggleFlag } = useBoard(gameModeToOptions(mode));
 
   const init = (mode: GameMode) => {
     setMode(mode);
@@ -66,7 +66,9 @@ const usePlayGround = () => {
     return gameModeToOptions(mode);
   };
 
-  return { board, gameState, init, reset, open, getConfig };
+  const countFlags = () => board.flat().filter((cell) => cell.isFlagged).length;
+
+  return { board, gameState, init, reset, open, getConfig, toggleFlag, countFlags };
 };
 
 export default usePlayGround;
