@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useBoard, { Board } from '../components/Board';
+import useBoard, { Board } from './useBoard';
 
 type GameState = 'playing' | 'win' | 'lose';
 
@@ -35,7 +35,6 @@ const usePlayGround = (options: Options) => {
       if (isWin(updatedBoard)) {
         setGameState('win');
         openAll();
-        return;
       }
     } else {
       switch (result.value) {

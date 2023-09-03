@@ -41,12 +41,12 @@ const PlayGround = () => {
           'bg-slate-700 w-[90vmin] h-[90vmin] md:w-[60vmin] md:h-[60vmin] grid grid-cols-8 grid-rows-[8] md:gap-2 gap-1 p-2'
         }
       >
-        {board.flat().map((cell, j) => {
+        {board.flat().map((cell) => {
           return (
             <Cell
-              key={j}
+              key={cell.id}
               cell={cell}
-              handleClick={() => open(j)}
+              handleClick={open}
               isFailed={gameState === 'lose'}
             ></Cell>
           );

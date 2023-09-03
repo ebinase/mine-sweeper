@@ -3,17 +3,19 @@
 import useLongPress from '@/hooks/useLongPress';
 import Image from 'next/image';
 import { useState } from 'react';
+import { CellData } from '../../hooks/useBoard';
 
 type Props = {
-  handleClick: () => void;
+  handleClick: (id: number) => void;
+  cell: CellData;
 };
 
-const UnopenedCell: React.FC<Props> = ({ handleClick }) => {
+const UnopenedCell: React.FC<Props> = ({ handleClick, cell }) => {
   const [isFlagged, setIsFlagged] = useState(false);
 
   // マスの開放、長押しでフラグでのフラグの切り替え
   const handleLongPress = () => setIsFlagged(!isFlagged);
-  const handleClickWithFlag = () => (isFlagged ? setIsFlagged(false) : handleClick()); // フラグが立っているときは開放しない
+  const handleClickWithFlag = () => (isFlagged ? setIsFlagged(false) : handleClick(cell.id)); // フラグが立っているときは開放しない
   const longPressEvent = useLongPress(handleLongPress, handleClickWithFlag);
   // 右クリックでフラグを切り替える
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
