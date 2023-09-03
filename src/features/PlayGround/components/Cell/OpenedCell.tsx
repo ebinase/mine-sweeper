@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { CellData } from '../..';
+import { CellData } from '../../hooks/useBoard';
 
 const COLOR_MAP: Record<number, string> = {
   1: 'text-blue-600',
@@ -57,7 +57,7 @@ const Count = ({ value }: { value: number }) => {
 
 const OpenedCell: React.FC<{ cell: CellData; isExploded: boolean }> = ({ cell, isExploded }) => {
   // Cellのデータ型ごと再検討する
-  const content: Content = cell.isBomb
+  const content: Content = cell.isMine
     ? { type: 'bomb', isExploded }
     : { type: 'count', value: cell.value as number };
   return (

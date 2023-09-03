@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
-import { CellData } from '../..';
 import OpenedCell from './OpenedCell';
 import UnopenedCell from './UnopenedCell';
+import { CellData } from '../../hooks/useBoard';
 
 type Props = {
   cell: CellData;
-  handleClick: () => void;
+  handleClick: (id: number) => void;
   isFailed: boolean;
 };
 
@@ -17,7 +17,7 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false }) => {
       {cell.isOpen ? (
         <OpenedCell cell={cell} isExploded={isFailed} />
       ) : (
-        <UnopenedCell handleClick={handleClick} />
+        <UnopenedCell cell={cell} handleClick={handleClick} />
       )}
     </div>
   );
