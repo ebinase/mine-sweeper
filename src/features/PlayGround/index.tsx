@@ -13,7 +13,7 @@ import Image from 'next/image';
 // TODO: 難易度選択
 
 const PlayGround = () => {
-  const { board, gameState, reset, open, getConfig, countFlags, toggleFlag } = usePlayGround();
+  const { board, gameState, reset, init, open, getConfig, countFlags, toggleFlag } = usePlayGround();
   const confetti = useConfetti();
 
   useEffect(() => {
@@ -66,6 +66,13 @@ const PlayGround = () => {
             ></Cell>
           );
         })}
+      </div>
+      <div className='py-2'>
+        <select className='bg-slate-500 p-1 rounded-none text-sm' onChange={(e) => {init(e.target.value as GameMode)}}>
+          <option value="easy">Easy</option>
+          <option value="normal">Normal</option>
+          <option value="hard">Hard</option>
+        </select>
       </div>
       <div className='flex flex-col items-center py-10 gap-3'>
         {gameState !== 'playing' && (
