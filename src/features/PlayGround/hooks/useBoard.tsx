@@ -6,7 +6,7 @@ import {
   getAroundItems,
   isInside,
   toMarixPosition,
-} from '../../functions/matrix';
+} from '../functions/matrix';
 
 export type BoardConfig = {
   rows: number;
@@ -14,7 +14,7 @@ export type BoardConfig = {
   mines: number;
 };
 
-type CellData = { id: number; isOpen: boolean; isMine: boolean; value: number | null };
+export type CellData = { id: number; isOpen: boolean; isMine: boolean; value: number | null };
 // type Board = Array<CellData>;
 export type Board = CellData[][];
 
