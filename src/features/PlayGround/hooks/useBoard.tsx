@@ -1,12 +1,7 @@
 import { getRandomElements } from '@/functions/random';
 import type { Either } from '@/types/Either';
 import { useState } from 'react';
-import {
-  convertToMatrix,
-  getAroundItems,
-  isInside,
-  toMarixPosition,
-} from '../functions/matrix';
+import { convertToMatrix, getAroundItems, isInside, toMarixPosition } from '../functions/matrix';
 
 export type BoardConfig = {
   rows: number;
