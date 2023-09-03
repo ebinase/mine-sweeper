@@ -3,7 +3,8 @@
 import { useEffect } from 'react';
 import Cell from './components/Cell';
 import useConfetti from '@/hooks/useConfetti';
-import usePlayGround from './hooks/usePlayGround';
+import usePlayGround, { GameMode } from './hooks/usePlayGround';
+import Image from 'next/image';
 
 // グローバルメニュー
 // TODO: タイマー
@@ -12,7 +13,7 @@ import usePlayGround from './hooks/usePlayGround';
 // TODO: 難易度選択
 
 const PlayGround = () => {
-  const { board, gameState, reset, open } = usePlayGround();
+  const { board, gameState, reset, open, getConfig } = usePlayGround();
   const confetti = useConfetti();
 
   useEffect(() => {
@@ -34,7 +35,15 @@ const PlayGround = () => {
 
   return (
     <div>
-      <h1>Mine Sweeper - Classic</h1>
+      <header className='flex justify-between items-center py-0.5'>
+        <h1>Mine Sweeper</h1>
+        <div>
+          <div className='flex items-center'>
+            <Image src='/mine.svg' alt='exploded mine' width={20} height={20} />
+            <span className='text-xs'>×{getConfig().mines}</span>
+          </div>
+        </div>
+      </header>
       <div
         className={'bg-slate-700 w-[90vmin] md:w-[60vmin] grid gap-1 p-2'}
         style={{

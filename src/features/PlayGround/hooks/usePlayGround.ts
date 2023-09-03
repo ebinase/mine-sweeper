@@ -62,7 +62,11 @@ const usePlayGround = () => {
     }
   };
 
-  return { board, gameState, init, reset, open };
+  const getConfig = () => {
+    return gameModeToOptions(mode);
+  };
+
+  return { board, gameState, init, reset, open, getConfig };
 };
 
 export default usePlayGround;
