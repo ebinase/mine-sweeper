@@ -49,7 +49,7 @@ const PlayGround = () => {
         </div>
       </header>
       <div
-        className={'bg-slate-700 w-[90vmin] md:w-[60vmin] grid gap-1 p-2'}
+        className={'bg-slate-700 grid gap-1 p-2 w-fit'}
         style={{
           gridTemplateColumns: `repeat(${board[0].length}, 1fr)`,
           gridTemplateRows: `repeat(${board.length}, 1fr)`,
