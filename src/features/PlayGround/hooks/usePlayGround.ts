@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import useBoard, { MatrixBoard } from '../components/Board';
+import useBoard, { Board } from '../components/Board';
 
 type GameState = 'playing' | 'win' | 'lose';
 
-const isWin = (board: MatrixBoard): boolean => {
+const isWin = (board: Board): boolean => {
   return board.flat().every((cell) => {
     return cell.isBomb || cell.isOpen; // 爆弾以外のマスが全て開いていたら勝利
   });
