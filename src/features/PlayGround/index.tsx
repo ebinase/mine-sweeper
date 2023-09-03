@@ -12,8 +12,7 @@ import usePlayGround from './hooks/usePlayGround';
 // TODO: 難易度選択
 
 const PlayGround = () => {
-  const settings = { rows: 8, cols: 8, mines: 10 };
-  const { board, gameState, init, open } = usePlayGround(settings);
+  const { board, gameState, reset, open } = usePlayGround();
   const confetti = useConfetti();
 
   useEffect(() => {
@@ -37,9 +36,11 @@ const PlayGround = () => {
     <div>
       <h1>Mine Sweeper - Classic</h1>
       <div
-        className={
-          'bg-slate-700 w-[90vmin] h-[90vmin] md:w-[60vmin] md:h-[60vmin] grid grid-cols-8 grid-rows-[8] md:gap-2 gap-1 p-2'
-        }
+        className={'bg-slate-700 w-[90vmin] md:w-[60vmin] grid gap-1 p-2'}
+        style={{
+          gridTemplateColumns: `repeat(${board[0].length}, 1fr)`,
+          gridTemplateRows: `repeat(${board.length}, 1fr)`,
+        }}
       >
         {board.flat().map((cell) => {
           return (
@@ -56,7 +57,7 @@ const PlayGround = () => {
         {gameState !== 'playing' && (
           <button
             className='bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] text-white px-3 py-1 text-sm'
-            onClick={() => init(settings)}
+            onClick={reset}
           >
             NEW GAME
           </button>

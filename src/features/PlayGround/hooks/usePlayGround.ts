@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useBoard, { Board } from './useBoard';
+import useBoard, { Board, BoardConfig } from './useBoard';
 
 type GameState = 'playing' | 'win' | 'lose';
 
@@ -9,19 +9,33 @@ const isWin = (board: Board): boolean => {
   });
 };
 
-type Options = {
-  rows: number;
-  cols: number;
-  mines: number;
+export type GameMode = 'easy' | 'normal' | 'hard';
+
+const gameModeToOptions = (gameMode: GameMode): BoardConfig => {
+  switch (gameMode) {
+    case 'easy':
+      return { rows: 9, cols: 9, mines: 10 };
+    case 'normal':
+      return { rows: 16, cols: 16, mines: 40 };
+    case 'hard':
+      return { rows: 30, cols: 16, mines: 99 };
+  }
 };
 
-const usePlayGround = (options: Options) => {
+const usePlayGround = () => {
+  const [mode, setMode] = useState<GameMode>('easy');
   const [gameState, setGameState] = useState<GameState>('playing');
-  const { board, initBoard, openCell, openAll } = useBoard(options);
+  const { board, initBoard, openCell, openAll } = useBoard(gameModeToOptions(mode));
 
-  const init = (options: Options) => {
-    initBoard(options);
+  const init = (mode: GameMode) => {
+    setMode(mode);
     setGameState('playing');
+    initBoard(gameModeToOptions(mode));
+  };
+
+  // 同じモードでリセットする
+  const reset = () => {
+    init(mode);
   };
 
   const open = (index: number) => {
@@ -48,7 +62,7 @@ const usePlayGround = (options: Options) => {
     }
   };
 
-  return { board, gameState, init, open };
+  return { board, gameState, init, reset, open };
 };
 
 export default usePlayGround;
