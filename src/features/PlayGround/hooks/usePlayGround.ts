@@ -5,7 +5,7 @@ type GameState = 'playing' | 'win' | 'lose';
 
 const isWin = (board: Board): boolean => {
   return board.flat().every((cell) => {
-    return cell.isBomb || cell.isOpen; // 爆弾以外のマスが全て開いていたら勝利
+    return cell.isMine || cell.isOpen; // 爆弾以外のマスが全て開いていたら勝利
   });
 };
 

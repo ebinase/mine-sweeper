@@ -14,7 +14,7 @@ export type BoardConfig = {
   mines: number;
 };
 
-type CellData = { id: number; isOpen: boolean; isBomb: boolean; value: number | null };
+type CellData = { id: number; isOpen: boolean; isMine: boolean; value: number | null };
 // type Board = Array<CellData>;
 export type Board = CellData[][];
 
@@ -23,25 +23,25 @@ const generateRandomBoard = ({ rows, cols, mines }: BoardConfig): Board => {
     return {
       id: j,
       isOpen: false,
-      isBomb: false,
+      isMine: false,
       value: null,
     };
   });
 
   // initialBoardの中からランダムにmines個の爆弾の位置を決める
-  const bombPositions = getRandomElements(
+  const minePositions = getRandomElements(
     initialBoard.map((cell) => cell.id),
     mines,
   );
 
-  const boardWithBombs = initialBoard.map((cell, j) => {
+  const boardWithMines = initialBoard.map((cell, j) => {
     return {
       ...cell,
-      isBomb: bombPositions.includes(j),
+      isMine: minePositions.includes(j),
     };
   });
 
-  return setMineCount(convertToMatrix(boardWithBombs, rows, cols));
+  return setMineCount(convertToMatrix(boardWithMines, rows, cols));
 };
 
 // 周囲の爆弾の数を数える
@@ -50,10 +50,10 @@ const setMineCount = (matrix: Board): Board => {
   const newBoard = matrix.map((row, i) => {
     return row.map((cell, j) => {
       // すでに爆弾だったら何もしない
-      if (cell.isBomb) return cell;
+      if (cell.isMine) return cell;
 
       // 周囲8マスの爆弾の数を数える
-      const count = getAroundItems(matrix, [i, j]).filter((item) => item.isBomb).length;
+      const count = getAroundItems(matrix, [i, j]).filter((item) => item.isMine).length;
       return { ...cell, value: count };
     });
   });
@@ -90,7 +90,7 @@ const openEmptyArea = (board: Board, selected: [number, number]): Board => {
     // 何もないマスだったら周囲のマスをキューに追加
     if (newBoard[target[0]][target[1]].value === 0) {
       getAroundItems(newBoard, target)
-        .filter((cell) => !cell.isOpen && !cell.isBomb)
+        .filter((cell) => !cell.isOpen && !cell.isMine)
         .forEach((cell) => {
           queue.push(toMarixPosition(cell.id, newBoard[0].length));
         });
@@ -129,7 +129,7 @@ const useBoard = (options: Options) => {
       return { kind: 'Left', value: 'Cell already opened' };
     }
 
-    if (targetCell.isBomb) {
+    if (targetCell.isMine) {
       return { kind: 'Left', value: 'Mine Exploded' };
     }
 
