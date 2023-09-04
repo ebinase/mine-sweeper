@@ -68,7 +68,7 @@ const usePlayGround = () => {
 
   const countFlags = () => board.flat().filter((cell) => cell.isFlagged).length;
 
-  return { board, gameState, init, reset, open, getConfig, toggleFlag, countFlags };
+  return { board, gameState, init, reset, open, getConfig, toggleFlag, countFlags, mode };
 };
 
 export default usePlayGround;

@@ -13,7 +13,8 @@ import Image from 'next/image';
 // TODO: 難易度選択
 
 const PlayGround = () => {
-  const { board, gameState, reset, init, open, getConfig, countFlags, toggleFlag } = usePlayGround();
+  const { board, gameState, reset, init, open, getConfig, countFlags, toggleFlag, mode } =
+    usePlayGround();
   const confetti = useConfetti();
 
   useEffect(() => {
@@ -43,47 +44,61 @@ const PlayGround = () => {
             <span className='text-xs'>×{countFlags()}</span>
           </div>
           <div className='flex items-center'>
-            <Image src='/mine.svg' alt='exploded mine' width={20} height={20} />
+            <Image src='/mine.svg' alt='exploded mine' width={15} height={15} />
             <span className='text-xs'>×{getConfig().mines}</span>
           </div>
         </div>
       </header>
-      <div
-        className={'bg-slate-700 grid gap-1 p-2 w-fit'}
-        style={{
-          gridTemplateColumns: `repeat(${board[0].length}, 1fr)`,
-          gridTemplateRows: `repeat(${board.length}, 1fr)`,
-        }}
-      >
-        {board.flat().map((cell) => {
-          return (
-            <Cell
-              key={cell.id}
-              cell={cell}
-              handleClick={open}
-              isFailed={gameState === 'lose'}
-              toggleFlag={toggleFlag}
-            ></Cell>
-          );
-        })}
+      <div className='overflow-auto w-fit h-fit max-w-[85vmin] max-h-[85vmin] border-slate-200 border-spacing bg-gray-500/30 shadow-inner'>
+        <div
+          className={'bg-slate-700 grid gap-1 p-2 w-fit'}
+          style={{
+            gridTemplateColumns: `repeat(${board[0].length}, 1fr)`,
+            gridTemplateRows: `repeat(${board.length}, 1fr)`,
+          }}
+        >
+          {board.flat().map((cell) => {
+            return (
+              <Cell
+                key={cell.id}
+                cell={cell}
+                handleClick={open}
+                isFailed={gameState === 'lose'}
+                toggleFlag={toggleFlag}
+              ></Cell>
+            );
+          })}
+        </div>
       </div>
       <div className='py-2'>
-        <select className='bg-slate-500 p-1 rounded-none text-sm' onChange={(e) => {init(e.target.value as GameMode)}}>
-          <option value="easy">Easy</option>
-          <option value="normal">Normal</option>
-          <option value="hard">Hard</option>
+        <select
+          className='bg-slate-500 p-1 rounded-none text-sm'
+          onChange={(e) => {
+            init(e.target.value as GameMode);
+          }}
+        >
+          <option defaultChecked={mode === 'easy'} value='easy'>
+            Easy
+          </option>
+          <option defaultChecked={mode === 'normal'} value='normal'>
+            Normal
+          </option>
+          <option defaultChecked={mode === 'hard'} value='hard'>
+            Hard
+          </option>
         </select>
       </div>
-      <div className='flex flex-col items-center py-10 gap-3'>
-        {gameState !== 'playing' && (
+
+      {gameState !== 'playing' && (
+        <div className='flex flex-col items-center py-10 gap-3'>
           <button
             className='bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] text-white px-3 py-1 text-sm'
             onClick={reset}
           >
             NEW GAME
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
