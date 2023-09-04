@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Cell from './components/Cell';
 import useConfetti from '@/hooks/useConfetti';
 import usePlayGround, { GameMode } from './hooks/usePlayGround';
@@ -16,6 +16,7 @@ const PlayGround = () => {
   const { board, gameState, reset, init, open, getConfig, countFlags, toggleFlag, mode } =
     usePlayGround();
   const confetti = useConfetti();
+  const boardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (gameState !== 'win') return;
@@ -34,6 +35,19 @@ const PlayGround = () => {
     return () => clearInterval(timerId);
   }, [gameState, confetti]);
 
+  useEffect(() => {
+    // TODO: もっとわかりやすいUIにする
+    const boardElement = boardRef.current;
+    if (!boardElement) return;
+    // 盤面サイズが正しく図れるようにする
+    boardElement.classList.remove('p-2');
+    // スクロール可能な場合は見た目が分かりやすくなるようpaddingを追加する
+    const isScrollable = boardElement.scrollHeight > boardElement.clientHeight;
+    if (isScrollable) {
+      boardElement.classList.add('p-2');
+    }
+  }, [mode]);
+
   return (
     <div>
       <header className='flex justify-between items-center py-0.5'>
@@ -49,7 +63,12 @@ const PlayGround = () => {
           </div>
         </div>
       </header>
-      <div className='overflow-auto w-fit h-fit max-w-[85vmin] max-h-[85vmin] border-slate-200 border-spacing bg-gray-500/30 shadow-inner'>
+      <div
+        className={
+          'overflow-auto w-fit h-fit max-w-[85vw] max-h-[70vh] bg-black/50 dark:bg-white/50'
+        }
+        ref={boardRef}
+      >
         <div
           className={'bg-slate-700 grid gap-1 p-2 w-fit'}
           style={{
