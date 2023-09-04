@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Cell from './components/Cell';
 import useConfetti from '@/hooks/useConfetti';
 import usePlayGround, { GameMode } from './hooks/usePlayGround';
@@ -13,8 +13,10 @@ import Image from 'next/image';
 // TODO: 難易度選択
 
 const PlayGround = () => {
-  const { board, gameState, reset, open, getConfig, countFlags, toggleFlag } = usePlayGround();
+  const { board, gameState, reset, init, open, getConfig, countFlags, toggleFlag, mode } =
+    usePlayGround();
   const confetti = useConfetti();
+  const boardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (gameState !== 'win') return;
@@ -33,6 +35,19 @@ const PlayGround = () => {
     return () => clearInterval(timerId);
   }, [gameState, confetti]);
 
+  useEffect(() => {
+    // TODO: もっとわかりやすいUIにする
+    const boardElement = boardRef.current;
+    if (!boardElement) return;
+    // 盤面サイズが正しく図れるようにする
+    boardElement.classList.remove('p-2');
+    // スクロール可能な場合は見た目が分かりやすくなるようpaddingを追加する
+    const isScrollable = boardElement.scrollHeight > boardElement.clientHeight;
+    if (isScrollable) {
+      boardElement.classList.add('p-2');
+    }
+  }, [mode]);
+
   return (
     <div>
       <header className='flex justify-between items-center py-0.5'>
@@ -43,40 +58,66 @@ const PlayGround = () => {
             <span className='text-xs'>×{countFlags()}</span>
           </div>
           <div className='flex items-center'>
-            <Image src='/mine.svg' alt='exploded mine' width={20} height={20} />
+            <Image src='/mine.svg' alt='exploded mine' width={15} height={15} />
             <span className='text-xs'>×{getConfig().mines}</span>
           </div>
         </div>
       </header>
       <div
-        className={'bg-slate-700 w-[90vmin] md:w-[60vmin] grid gap-1 p-2'}
-        style={{
-          gridTemplateColumns: `repeat(${board[0].length}, 1fr)`,
-          gridTemplateRows: `repeat(${board.length}, 1fr)`,
-        }}
+        className={
+          'overflow-auto w-fit h-fit max-w-[90vw] max-h-[55vh] md:max-h-[70vh] bg-black/50 dark:bg-white/50'
+        }
+        ref={boardRef}
       >
-        {board.flat().map((cell) => {
-          return (
-            <Cell
-              key={cell.id}
-              cell={cell}
-              handleClick={open}
-              isFailed={gameState === 'lose'}
-              toggleFlag={toggleFlag}
-            ></Cell>
-          );
-        })}
+        <div
+          className={'bg-slate-700 grid gap-1 p-2 w-fit'}
+          style={{
+            gridTemplateColumns: `repeat(${board[0].length}, 1fr)`,
+            gridTemplateRows: `repeat(${board.length}, 1fr)`,
+          }}
+        >
+          {board.flat().map((cell) => {
+            return (
+              <Cell
+                key={cell.id}
+                cell={cell}
+                handleClick={open}
+                isFailed={gameState === 'lose'}
+                toggleFlag={toggleFlag}
+              ></Cell>
+            );
+          })}
+        </div>
       </div>
-      <div className='flex flex-col items-center py-10 gap-3'>
-        {gameState !== 'playing' && (
+      <div className='py-2'>
+        <select
+          className='bg-slate-500 p-1 rounded-none text-sm'
+          onChange={(e) => {
+            init(e.target.value as GameMode);
+          }}
+        >
+          <option defaultChecked={mode === 'easy'} value='easy'>
+            Easy
+          </option>
+          <option defaultChecked={mode === 'normal'} value='normal'>
+            Normal
+          </option>
+          <option defaultChecked={mode === 'hard'} value='hard'>
+            Hard
+          </option>
+        </select>
+      </div>
+
+      {gameState !== 'playing' && (
+        <div className='flex flex-col items-center py-10 gap-3'>
           <button
             className='bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] text-white px-3 py-1 text-sm'
             onClick={reset}
           >
             NEW GAME
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
