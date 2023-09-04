@@ -26,7 +26,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag }) => {
       {...longPressEvent}
       onContextMenu={handleContextMenu}
     >
-      {cell.isFlagged && <Image src='/flag.png' alt='red flag' width={30} height={30} />}
+      {cell.isFlagged && <Image src='/flag.png' alt='red flag' width={30} height={30} className='w-3/5' />}
     </div>
   );
 };
