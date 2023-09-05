@@ -16,10 +16,13 @@ export type CellData = {
   isFlagged: boolean;
   value: number | null;
 };
-// type Board = Array<CellData>;
+
 export type Board = CellData[][];
 
-const generateRandomBoard = ({ rows, cols, mines }: BoardConfig): Board => {
+const generateRandomBoard = (
+  { rows, cols, mines }: BoardConfig,
+  forceEmpty: CellData['id'] | undefined = undefined,
+): Board => {
   const initialBoard = [...Array(rows * cols)].map((_, j) => {
     return {
       id: j,
@@ -31,8 +34,15 @@ const generateRandomBoard = ({ rows, cols, mines }: BoardConfig): Board => {
   });
 
   // initialBoardの中からランダムにmines個の爆弾の位置を決める
+  // forceEmptyが指定されている場合はそのマスと周囲のマスを除外する
+  const noMineArea =
+    forceEmpty !== undefined
+      ? getAroundItems(convertToMatrix(initialBoard, rows, cols), toMarixPosition(forceEmpty, cols))
+          .map((cell) => cell.id)
+          .concat([forceEmpty])
+      : [];
   const minePositions = getRandomElements(
-    initialBoard.map((cell) => cell.id),
+    initialBoard.map((cell) => cell.id).filter((id) => !noMineArea.includes(id)),
     mines,
   );
 
@@ -110,6 +120,14 @@ const openAll = (board: Board): Board => {
   });
 };
 
+const isFirstClick = (board: Board): boolean => {
+  return board.every((row) => {
+    return row.every((cell) => {
+      return !cell.isOpen;
+    });
+  });
+};
+
 type Options = BoardConfig;
 
 const useBoard = (options: Options) => {
@@ -121,9 +139,14 @@ const useBoard = (options: Options) => {
 
   const openCell = (cellId: number): Either<string, Board> => {
     const position = toMarixPosition(cellId, board[0].length);
-    const targetCell = board[position[0]][position[1]];
 
-    if (!isInside(position, board)) {
+    // 最初のターンだけ盤面を書き換える
+    // FIXME: isFirstClickを毎回計算しないようにする
+    const targetBoard = isFirstClick(board) ? generateRandomBoard(options, cellId) : board;
+
+    const targetCell = targetBoard[position[0]][position[1]];
+
+    if (!isInside(position, targetBoard)) {
       return { kind: 'Left', value: 'Invalid position' };
     }
 
@@ -136,7 +159,7 @@ const useBoard = (options: Options) => {
     }
 
     const updatedBoard =
-      targetCell.value === 0 ? openEmptyArea(board, position) : open(board, position);
+      targetCell.value === 0 ? openEmptyArea(targetBoard, position) : open(targetBoard, position);
 
     setBoard(updatedBoard);
 

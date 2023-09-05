@@ -32,7 +32,10 @@ export const getAroundItems = <T>(source: T[][], position: MatrixPosition): Arra
   return positions.map(([row, col]) => source[row][col]);
 };
 
-const getAroundPositions = <T>(source: T[][], position: MatrixPosition): Array<MatrixPosition> => {
+export const getAroundPositions = <T>(
+  source: T[][],
+  position: MatrixPosition,
+): Array<MatrixPosition> => {
   const [row, col] = position;
   const positions = directions.map(([dRow, dCol]) => [row + dRow, col + dCol] as MatrixPosition);
   return positions.filter(([_row, _col]) => isInside([_row, _col], source));
