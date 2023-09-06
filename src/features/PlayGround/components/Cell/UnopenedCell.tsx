@@ -3,6 +3,7 @@
 import useLongPress from '@/hooks/useLongPress';
 import Image from 'next/image';
 import { CellData } from '../../hooks/useBoard';
+import { useEffect, useState } from 'react';
 
 type Props = {
   handleClick: (id: number) => void;
@@ -26,7 +27,15 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag }) => {
       {...longPressEvent}
       onContextMenu={handleContextMenu}
     >
-      {cell.isFlagged && <Image src='/flag.png' alt='red flag' width={30} height={30} className='w-3/5' />}
+      {cell.isFlagged && (
+        <Image
+          src='/flag.png'
+          alt='red flag'
+          width={30}
+          height={30}
+          className={'w-3/5 lg:animate-none animate-slide-in-blurred-top'}
+        />
+      )}
     </div>
   );
 };
