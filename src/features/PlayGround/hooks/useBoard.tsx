@@ -19,10 +19,7 @@ export type CellData = {
 
 export type Board = CellData[][];
 
-const generateRandomBoard = (
-  { rows, cols, mines }: BoardConfig,
-  forceEmpty: CellData['id'] | undefined = undefined,
-): Board => {
+const getInitialBoard = (rows: BoardConfig['rows'], cols: BoardConfig['cols']): Board => {
   const initialBoard = [...Array(rows * cols)].map((_, j) => {
     return {
       id: j,
@@ -33,27 +30,38 @@ const generateRandomBoard = (
     };
   });
 
+  return convertToMatrix(initialBoard, rows, cols);
+};
+
+const buildRandomBoard = (
+  { rows, cols, mines }: BoardConfig,
+  forceEmpty: CellData['id'] | undefined = undefined,
+): Board => {
+  const initialBoard = getInitialBoard(rows, cols);
+
   // initialBoardの中からランダムにmines個の爆弾の位置を決める
   // forceEmptyが指定されている場合はそのマスと周囲のマスを除外する
   const noMineArea =
     forceEmpty !== undefined
-      ? getAroundItems(convertToMatrix(initialBoard, rows, cols), toMarixPosition(forceEmpty, cols))
+      ? getAroundItems(initialBoard, toMarixPosition(forceEmpty, cols))
           .map((cell) => cell.id)
           .concat([forceEmpty])
       : [];
   const minePositions = getRandomElements(
-    initialBoard.map((cell) => cell.id).filter((id) => !noMineArea.includes(id)),
+    initialBoard
+      .flat()
+      .map((cell) => cell.id)
+      .filter((id) => !noMineArea.includes(id)),
     mines,
   );
 
-  const boardWithMines = initialBoard.map((cell, j) => {
-    return {
-      ...cell,
-      isMine: minePositions.includes(j),
-    };
+  const boardWithMines = initialBoard.map((row) => {
+    return row.map((cell) => {
+      return minePositions.includes(cell.id) ? { ...cell, isMine: true } : cell;
+    });
   });
 
-  return setMineCount(convertToMatrix(boardWithMines, rows, cols));
+  return setMineCount(boardWithMines);
 };
 
 // 周囲の爆弾の数を数える
@@ -120,29 +128,25 @@ const openAll = (board: Board): Board => {
   });
 };
 
-const isFirstClick = (board: Board): boolean => {
-  return board.every((row) => {
-    return row.every((cell) => {
-      return !cell.isOpen;
-    });
-  });
-};
-
 type Options = BoardConfig;
 
 const useBoard = (options: Options) => {
-  const [board, setBoard] = useState<Board>(generateRandomBoard(options));
+  const [board, setBoard] = useState<Board>(getInitialBoard(options.rows, options.cols));
+  const [isFirstClick, setIsFirstClick] = useState<boolean>(true);
 
   const initBoard = (options: BoardConfig) => {
-    setBoard(generateRandomBoard(options));
+    setBoard(getInitialBoard(options.rows, options.cols));
+    setIsFirstClick(true);
   };
 
   const openCell = (cellId: number): Either<string, Board> => {
     const position = toMarixPosition(cellId, board[0].length);
 
     // 最初のターンだけ盤面を書き換える
-    // FIXME: isFirstClickを毎回計算しないようにする
-    const targetBoard = isFirstClick(board) ? generateRandomBoard(options, cellId) : board;
+    const targetBoard = isFirstClick ? buildRandomBoard(options, cellId) : board;
+    if (isFirstClick) {
+      setIsFirstClick(false);
+    }
 
     const targetCell = targetBoard[position[0]][position[1]];
 
