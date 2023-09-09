@@ -16,7 +16,7 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false, toggleFlag
   return (
     <div
       className={
-        'flex justify-center items-center aspect-square select-none w-[8vmin] md:w-[6vmin]'
+        'flex justify-center items-center aspect-square w-[8vmin] md:w-[6vmin]'
       }
     >
       {cell.isOpen ? (
