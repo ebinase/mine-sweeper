@@ -17,10 +17,16 @@ export type CellData = {
   value: number | null;
 };
 
-export type Board = CellData[][];
+export type Board = {
+  meta: BoardConfig;
+  data: CellData[][];
+  initialized: boolean;  // 設定に合わせて爆弾を配置したかどうか
+};
 
-const getInitialBoard = (rows: BoardConfig['rows'], cols: BoardConfig['cols']): Board => {
-  const initialBoard = [...Array(rows * cols)].map((_, j) => {
+const makePlainBoard = (config: BoardConfig): Board => {
+  const { rows, cols } = config;
+  console.log(rows, cols);
+  const plainBoardData = [...Array(rows * cols)].map((_, j) => {
     return {
       id: j,
       isOpen: false,
@@ -30,72 +36,77 @@ const getInitialBoard = (rows: BoardConfig['rows'], cols: BoardConfig['cols']): 
     };
   });
 
-  return convertToMatrix(initialBoard, rows, cols);
+  return {
+    meta: config,
+    data: convertToMatrix(plainBoardData, rows, cols),
+    initialized: false,
+  };
 };
 
-const buildRandomBoard = (
-  { rows, cols, mines }: BoardConfig,
-  forceEmpty: CellData['id'] | undefined = undefined,
-): Board => {
-  const initialBoard = getInitialBoard(rows, cols);
-
+const setMines = (board: Board, forceEmpty: CellData['id'] | undefined = undefined): Board => {
   // initialBoardの中からランダムにmines個の爆弾の位置を決める
   // forceEmptyが指定されている場合はそのマスと周囲のマスを除外する
   const noMineArea =
     forceEmpty !== undefined
-      ? getAroundItems(initialBoard, toMarixPosition(forceEmpty, cols))
+      ? getAroundItems(board.data, toMarixPosition(forceEmpty, board.meta.cols))
           .map((cell) => cell.id)
           .concat([forceEmpty])
       : [];
   const minePositions = getRandomElements(
-    initialBoard
+    board.data
       .flat()
       .map((cell) => cell.id)
       .filter((id) => !noMineArea.includes(id)),
-    mines,
+    board.meta.mines,
   );
 
-  const boardWithMines = initialBoard.map((row) => {
-    return row.map((cell) => {
-      return minePositions.includes(cell.id) ? { ...cell, isMine: true } : cell;
-    });
-  });
+  const boardWithMines = {
+    ...board,
+    data: board.data.map((row) => {
+      return row.map((cell) => {
+        return minePositions.includes(cell.id) ? { ...cell, isMine: true } : cell;
+      });
+    }),
+  };
 
-  return setMineCount(boardWithMines);
+  return { ...setMineCount(boardWithMines), initialized: true };
 };
 
 // 周囲の爆弾の数を数える
-const setMineCount = (matrix: Board): Board => {
+const setMineCount = (board: Board): Board => {
   // matrixの要素を一つずつ見ていく
-  const newBoard = matrix.map((row, i) => {
+  const newBoardData = board.data.map((row, i) => {
     return row.map((cell, j) => {
       // すでに爆弾だったら何もしない
       if (cell.isMine) return cell;
 
       // 周囲8マスの爆弾の数を数える
-      const count = getAroundItems(matrix, [i, j]).filter((item) => item.isMine).length;
+      const count = getAroundItems(board.data, [i, j]).filter((item) => item.isMine).length;
       return { ...cell, value: count };
     });
   });
 
-  return newBoard;
+  return { ...board, data: newBoardData };
 };
 
 const open = (board: Board, selected: [number, number]): Board => {
   // 指定されたboardのマスを開く
-  return board.map((row, i) => {
-    return row.map((cell, j) => {
-      if (i === selected[0] && j === selected[1]) {
-        return { ...cell, isOpen: true };
-      }
-      return cell;
-    });
-  });
+  return {
+    ...board,
+    data: board.data.map((row, i) => {
+      return row.map((cell, j) => {
+        if (i === selected[0] && j === selected[1]) {
+          return { ...cell, isOpen: true };
+        }
+        return cell;
+      });
+    }),
+  };
 };
 
 // 何もないマスを一括開放する
 const openEmptyArea = (board: Board, selected: [number, number]): Board => {
-  const selectedCell = board[selected[0]][selected[1]];
+  const selectedCell = board.data[selected[0]][selected[1]];
   if (selectedCell.isOpen || selectedCell.value !== 0) return board;
 
   // flood fill
@@ -108,11 +119,11 @@ const openEmptyArea = (board: Board, selected: [number, number]): Board => {
     newBoard = open(newBoard, target);
 
     // 何もないマスだったら周囲のマスをキューに追加
-    if (newBoard[target[0]][target[1]].value === 0) {
-      getAroundItems(newBoard, target)
+    if (newBoard.data[target[0]][target[1]].value === 0) {
+      getAroundItems(newBoard.data, target)
         .filter((cell) => !cell.isOpen && !cell.isMine)
         .forEach((cell) => {
-          queue.push(toMarixPosition(cell.id, newBoard[0].length));
+          queue.push(toMarixPosition(cell.id, newBoard.meta.cols));
         });
     }
   }
@@ -121,36 +132,34 @@ const openEmptyArea = (board: Board, selected: [number, number]): Board => {
 };
 
 const openAll = (board: Board): Board => {
-  return board.map((row) => {
-    return row.map((cell) => {
-      return { ...cell, isOpen: true };
-    });
-  });
+  return {
+    ...board,
+    data: board.data.map((row) => {
+      return row.map((cell) => {
+        return { ...cell, isOpen: true };
+      });
+    }),
+  };
 };
 
 type Options = BoardConfig;
 
 const useBoard = (options: Options) => {
-  const [board, setBoard] = useState<Board>(getInitialBoard(options.rows, options.cols));
-  const [isFirstClick, setIsFirstClick] = useState<boolean>(true);
+  const [board, setBoard] = useState<Board>(makePlainBoard(options));
 
   const initBoard = (options: BoardConfig) => {
-    setBoard(getInitialBoard(options.rows, options.cols));
-    setIsFirstClick(true);
+    setBoard(makePlainBoard(options));
   };
 
   const openCell = (cellId: number): Either<string, Board> => {
-    const position = toMarixPosition(cellId, board[0].length);
+    const position = toMarixPosition(cellId, board.meta.cols);
 
     // 最初のターンだけ盤面を書き換える
-    const targetBoard = isFirstClick ? buildRandomBoard(options, cellId) : board;
-    if (isFirstClick) {
-      setIsFirstClick(false);
-    }
+    const targetBoard = board.initialized ? board : setMines(board, cellId);
 
-    const targetCell = targetBoard[position[0]][position[1]];
+    const targetCell = targetBoard.data[position[0]][position[1]];
 
-    if (!isInside(position, targetBoard)) {
+    if (!isInside(position, targetBoard.data)) {
       return { kind: 'Left', value: 'Invalid position' };
     }
 
@@ -171,14 +180,17 @@ const useBoard = (options: Options) => {
   };
 
   const toggleFlag = (cellId: number): void => {
-    const updatedBoard = board.map((row) => {
-      return row.map((cell) => {
-        if (cell.id === cellId) {
-          return { ...cell, isFlagged: !cell.isFlagged };
-        }
-        return cell;
-      });
-    });
+    const updatedBoard = {
+      ...board,
+      data: board.data.map((row) => {
+        return row.map((cell) => {
+          if (cell.id === cellId) {
+            return { ...cell, isFlagged: !cell.isFlagged };
+          }
+          return cell;
+        });
+      }),
+    };
 
     setBoard(updatedBoard);
   };
