@@ -20,7 +20,7 @@ export type CellData = {
 export type Board = {
   meta: BoardConfig;
   data: CellData[][];
-  initialized: boolean;  // 設定に合わせて爆弾を配置したかどうか
+  initialized: boolean; // 設定に合わせて爆弾を配置したかどうか
 };
 
 const makePlainBoard = (config: BoardConfig): Board => {

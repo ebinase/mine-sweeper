@@ -41,9 +41,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag }) => {
     >
       {cell.isFlagged &&
         (isSuspicious ? (
-          <span className='text-gray-300 md:text-2xl' >
-            ?
-          </span>
+          <span className='text-gray-300 md:text-2xl'>?</span>
         ) : (
           <Image
             src='/flag.png'
