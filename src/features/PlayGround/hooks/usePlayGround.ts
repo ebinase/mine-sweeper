@@ -4,7 +4,7 @@ import useBoard, { Board, BoardConfig } from './useBoard';
 type GameState = 'playing' | 'win' | 'lose';
 
 const isWin = (board: Board): boolean => {
-  return board.flat().every((cell) => {
+  return board.data.flat().every((cell) => {
     return cell.isMine || cell.isOpen; // 爆弾以外のマスが全て開いていたら勝利
   });
 };
@@ -62,13 +62,9 @@ const usePlayGround = () => {
     }
   };
 
-  const getConfig = () => {
-    return gameModeToOptions(mode);
-  };
+  const countFlags = () => board.data.flat().filter((cell) => cell.isFlagged).length;
 
-  const countFlags = () => board.flat().filter((cell) => cell.isFlagged).length;
-
-  return { board, gameState, init, reset, open, getConfig, toggleFlag, countFlags, mode };
+  return { board, gameState, init, reset, open, toggleFlag, countFlags, mode };
 };
 
 export default usePlayGround;

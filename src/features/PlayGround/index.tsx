@@ -13,8 +13,7 @@ import Image from 'next/image';
 // TODO: 難易度選択
 
 const PlayGround = () => {
-  const { board, gameState, reset, init, open, getConfig, countFlags, toggleFlag, mode } =
-    usePlayGround();
+  const { board, gameState, reset, init, open, countFlags, toggleFlag, mode } = usePlayGround();
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
 
@@ -59,7 +58,7 @@ const PlayGround = () => {
           </div>
           <div className='flex items-center'>
             <Image src='/mine.svg' alt='exploded mine' width={15} height={15} />
-            <span className='text-xs'>×{getConfig().mines}</span>
+            <span className='text-xs'>×{board.meta.mines}</span>
           </div>
         </div>
       </header>
@@ -72,11 +71,11 @@ const PlayGround = () => {
         <div
           className={'bg-slate-700 grid gap-1 p-2 w-fit'}
           style={{
-            gridTemplateColumns: `repeat(${board[0].length}, 1fr)`,
-            gridTemplateRows: `repeat(${board.length}, 1fr)`,
+            gridTemplateColumns: `repeat(${board.meta.cols}, 1fr)`,
+            gridTemplateRows: `repeat(${board.meta.rows}, 1fr)`,
           }}
         >
-          {board.flat().map((cell) => {
+          {board.data.flat().map((cell) => {
             return (
               <Cell
                 key={cell.id}
