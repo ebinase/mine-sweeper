@@ -4,7 +4,7 @@ import { Press_Start_2P } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 
 const siteName= 'マインスイーパー Classic';
-const description = 'ブラウザで気軽に楽しめるクラシックなマインスイーパー | 3つの難易度で、スキマ時間にサクッと遊べる';
+const description = 'ブラウザで気軽に楽しめるクラシックデザインのマインスイーパー | 初級(9✕9) 中級(16✕16) 上級(30✕16)';
 const url = 'https://mine-sweeper.ebinas.dev';
 
 export const metadata: Metadata = {
