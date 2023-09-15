@@ -6,12 +6,6 @@ import useConfetti from '@/hooks/useConfetti';
 import usePlayGround, { GameMode } from './hooks/usePlayGround';
 import Image from 'next/image';
 
-// グローバルメニュー
-// TODO: タイマー
-// TODO: リセットボタン
-// TODO: 絵文字
-// TODO: 難易度選択
-
 const PlayGround = () => {
   const { board, gameState, gameMode, dispatch, flags } = usePlayGround();
   const confetti = useConfetti();

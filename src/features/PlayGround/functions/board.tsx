@@ -24,7 +24,6 @@ export type Board = {
 
 const makePlainBoard = (config: BoardConfig): Board => {
   const { rows, cols } = config;
-  console.log(rows, cols);
   const plainBoardData = [...Array(rows * cols)].map((_, j) => {
     return {
       id: j,

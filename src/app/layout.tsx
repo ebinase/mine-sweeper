@@ -3,8 +3,9 @@ import type { Metadata } from 'next';
 import { Press_Start_2P } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 
-const siteName= 'マインスイーパ クラシック | Minesweeper Classic';
-const description = 'マインスイーパクラシックへようこそ！ 誰もが知っている古典的ゲームを広告なしのシンプルなUIでプレイできます。完全無料。まずは難易度を3つの中から選び、プレイを開始しましょう';
+const siteName = 'マインスイーパ クラシック | Minesweeper Classic';
+const description =
+  'マインスイーパクラシックへようこそ！ 誰もが知っている古典的ゲームを広告なしのシンプルなUIでプレイできます。完全無料。まずは難易度を3つの中から選び、プレイを開始しましょう';
 const url = 'https://mine-sweeper.ebinas.dev';
 
 export const metadata: Metadata = {
