@@ -1,5 +1,14 @@
 import { useReducer } from 'react';
-import useBoard, { Board, BoardConfig } from './useBoard';
+import {
+  Board,
+  BoardConfig,
+  countFlags,
+  initBoard,
+  isAllOpened,
+  openAll,
+  openCell,
+  toggleFlag,
+} from '../functions/board';
 
 type GameState = 'initialized' | 'playing' | 'completed' | 'failed';
 
@@ -27,9 +36,6 @@ type Action =
   | { type: 'reset' }
   | { type: 'open'; index: number }
   | { type: 'toggleFlag'; index: number };
-
-// NOTE: 実質カスタムフックではないのでexportでいいかもしれない
-const { initBoard, openCell, openAll, toggleFlag, isAllOpened, countFlags } = useBoard();
 
 const initialize = (gameMode: GameMode): State => {
   return {

@@ -1,6 +1,6 @@
 import { getRandomElements } from '@/functions/random';
 import type { Either } from '@/types/Either';
-import { convertToMatrix, getAroundItems, isInside, toMarixPosition } from '../functions/matrix';
+import { convertToMatrix, getAroundItems, isInside, toMarixPosition } from './matrix';
 
 export type BoardConfig = {
   rows: number;
@@ -131,11 +131,11 @@ const openEmptyArea = (board: Board, selected: [number, number]): Board => {
 };
 
 // NOTE: PlainBoard型を作ってもいいかも
-const initBoard = (options: BoardConfig): Board => {
+export const initBoard = (options: BoardConfig): Board => {
   return makePlainBoard(options);
 };
 
-const openCell = (board: Board, cellId: number): Either<string, Board> => {
+export const openCell = (board: Board, cellId: number): Either<string, Board> => {
   const position = toMarixPosition(cellId, board.meta.cols);
 
   // 最初のターンだけ盤面を書き換える
@@ -161,7 +161,7 @@ const openCell = (board: Board, cellId: number): Either<string, Board> => {
   return { kind: 'Right', value: updatedBoard };
 };
 
-const openAll = (board: Board): Board => {
+export const openAll = (board: Board): Board => {
   return {
     ...board,
     data: board.data.map((row) => {
@@ -172,7 +172,7 @@ const openAll = (board: Board): Board => {
   };
 };
 
-const toggleFlag = (board: Board, cellId: number): Board => {
+export const toggleFlag = (board: Board, cellId: number): Board => {
   const updatedBoard = {
     ...board,
     data: board.data.map((row) => {
@@ -188,16 +188,11 @@ const toggleFlag = (board: Board, cellId: number): Board => {
   return updatedBoard;
 };
 
-const isAllOpened = (board: Board): boolean => {
+export const isAllOpened = (board: Board): boolean => {
   return board.data.flat().every((cell) => {
     return cell.isMine || cell.isOpen; // 爆弾以外のマスが全て開いていたら勝利
   });
 };
 
-const countFlags = (board: Board) => board.data.flat().filter((cell) => cell.isFlagged).length;
-
-const useBoard = () => {
-  return { initBoard, openCell, openAll, toggleFlag, isAllOpened, countFlags };
-};
-
-export default useBoard;
+export const countFlags = (board: Board) =>
+  board.data.flat().filter((cell) => cell.isFlagged).length;

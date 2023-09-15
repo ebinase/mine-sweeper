@@ -109,7 +109,7 @@ const PlayGround = () => {
         </select>
       </div>
 
-      {(gameState === "completed" || gameState === "failed") && (
+      {(gameState === 'completed' || gameState === 'failed') && (
         <div className='flex flex-col items-center py-10 gap-3'>
           <button
             className='bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] text-white px-3 py-1 text-sm'

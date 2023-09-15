@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { CellData } from '../../hooks/useBoard';
+import { CellData } from '../../functions/board';
 
 const COLOR_MAP: Record<number, string> = {
   1: 'text-blue-600',

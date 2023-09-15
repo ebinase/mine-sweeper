@@ -2,7 +2,7 @@
 
 import useLongPress from '@/hooks/useLongPress';
 import Image from 'next/image';
-import { CellData } from '../../hooks/useBoard';
+import { CellData } from '../../functions/board';
 import { useState } from 'react';
 
 type Props = {
