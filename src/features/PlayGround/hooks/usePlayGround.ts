@@ -1,3 +1,4 @@
+import { useReducer } from 'react';
 import useBoard, { Board, BoardConfig } from './useBoard';
 
 type GameState = 'initialized' | 'playing' | 'completed' | 'failed';
@@ -52,7 +53,7 @@ const open = (state: State, action: Extract<Action, { type: 'open' }>): State =>
       return {
         ...state,
         gameState: 'completed',
-        board: updatedBoard,
+        board: openAll(updatedBoard),
       };
     }
     return { ...state, board: updatedBoard };
@@ -91,9 +92,14 @@ const reducer = (state: State, action: Action): State => {
   }
 };
 
-  const countFlags = () => board.data.flat().filter((cell) => cell.isFlagged).length;
+const usePlayGround = () => {
+  // reducer
+  const [state, dispatch] = useReducer(reducer, initialize('easy'));
 
-  return { board, gameState, init, reset, open, toggleFlag, countFlags, mode };
+  // middleware
+  const flags = countFlags(state.board);
+
+  return { ...state, dispatch, flags };
 };
 
 export default usePlayGround;
