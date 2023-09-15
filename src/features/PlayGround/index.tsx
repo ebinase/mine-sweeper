@@ -13,12 +13,12 @@ import Image from 'next/image';
 // TODO: 難易度選択
 
 const PlayGround = () => {
-  const { board, gameState, reset, init, open, countFlags, toggleFlag, mode } = usePlayGround();
+  const { board, gameState, gameMode, dispatch, flags } = usePlayGround();
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (gameState !== 'win') return;
+    if (gameState !== 'completed') return;
 
     confetti.showBoth();
 
@@ -45,7 +45,7 @@ const PlayGround = () => {
     if (isScrollable) {
       boardElement.classList.add('p-2');
     }
-  }, [mode]);
+  }, [gameMode]);
 
   return (
     <div>
@@ -54,7 +54,7 @@ const PlayGround = () => {
         <div className='flex gap-2'>
           <div className='flex items-center'>
             <Image src='/flag.png' alt='flag' width={15} height={15} />
-            <span className='text-xs'>×{countFlags()}</span>
+            <span className='text-xs'>×{flags}</span>
           </div>
           <div className='flex items-center'>
             <Image src='/mine.svg' alt='exploded mine' width={15} height={15} />
@@ -80,9 +80,11 @@ const PlayGround = () => {
               <Cell
                 key={cell.id}
                 cell={cell}
-                handleClick={open}
-                isFailed={gameState === 'lose'}
-                toggleFlag={toggleFlag}
+                handleClick={() => dispatch({ type: 'open', index: cell.id })}
+                isFailed={gameState === 'failed'}
+                toggleFlag={() => {
+                  dispatch({ type: 'toggleFlag', index: cell.id });
+                }}
               ></Cell>
             );
           })}
@@ -92,26 +94,28 @@ const PlayGround = () => {
         <select
           className='bg-slate-500 p-1 rounded-none text-sm'
           onChange={(e) => {
-            init(e.target.value as GameMode);
+            dispatch({ type: 'init', gameMode: e.target.value as GameMode });
           }}
         >
-          <option defaultChecked={mode === 'easy'} value='easy'>
+          <option defaultChecked={gameMode === 'easy'} value='easy'>
             Easy
           </option>
-          <option defaultChecked={mode === 'normal'} value='normal'>
+          <option defaultChecked={gameMode === 'normal'} value='normal'>
             Normal
           </option>
-          <option defaultChecked={mode === 'hard'} value='hard'>
+          <option defaultChecked={gameMode === 'hard'} value='hard'>
             Hard
           </option>
         </select>
       </div>
 
-      {gameState !== 'playing' && (
+      {(gameState === "completed" || gameState === "failed") && (
         <div className='flex flex-col items-center py-10 gap-3'>
           <button
             className='bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] text-white px-3 py-1 text-sm'
-            onClick={reset}
+            onClick={() => {
+              dispatch({ type: 'reset' });
+            }}
           >
             NEW GAME
           </button>
