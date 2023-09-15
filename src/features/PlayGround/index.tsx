@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import Cell from './components/Cell';
 import useConfetti from '@/hooks/useConfetti';
 import usePlayGround, { GameMode } from './hooks/usePlayGround';
@@ -47,6 +47,12 @@ const PlayGround = () => {
     }
   }, [gameMode]);
 
+  const handleClick = useCallback((index: number) => dispatch({ type: 'open', index }), [dispatch]);
+  const toggleFlag = useCallback(
+    (index: number) => dispatch({ type: 'toggleFlag', index }),
+    [dispatch],
+  );
+
   return (
     <div>
       <header className='flex justify-between items-center py-0.5'>
@@ -80,12 +86,10 @@ const PlayGround = () => {
               <Cell
                 key={cell.id}
                 cell={cell}
-                handleClick={() => dispatch({ type: 'open', index: cell.id })}
                 isFailed={gameState === 'failed'}
-                toggleFlag={() => {
-                  dispatch({ type: 'toggleFlag', index: cell.id });
-                }}
-              ></Cell>
+                handleClick={handleClick}
+                toggleFlag={toggleFlag}
+              />
             );
           })}
         </div>
