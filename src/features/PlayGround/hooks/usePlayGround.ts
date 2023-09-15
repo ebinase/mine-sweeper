@@ -31,7 +31,7 @@ type State = {
   board: Board;
 };
 
-export type Action =
+type Action =
   | { type: 'init'; gameMode: GameMode }
   | { type: 'reset' }
   | { type: 'open'; index: number }
