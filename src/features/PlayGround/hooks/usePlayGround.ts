@@ -1,13 +1,16 @@
-import { useState } from 'react';
-import useBoard, { Board, BoardConfig } from './useBoard';
+import { useReducer } from 'react';
+import {
+  Board,
+  BoardConfig,
+  countFlags,
+  initBoard,
+  isAllOpened,
+  openAll,
+  openCell,
+  toggleFlag,
+} from '../functions/board';
 
-type GameState = 'playing' | 'win' | 'lose';
-
-const isWin = (board: Board): boolean => {
-  return board.data.flat().every((cell) => {
-    return cell.isMine || cell.isOpen; // 爆弾以外のマスが全て開いていたら勝利
-  });
-};
+type GameState = 'initialized' | 'playing' | 'completed' | 'failed';
 
 export type GameMode = 'easy' | 'normal' | 'hard';
 
@@ -22,49 +25,87 @@ const gameModeToOptions = (gameMode: GameMode): BoardConfig => {
   }
 };
 
-const usePlayGround = () => {
-  const [mode, setMode] = useState<GameMode>('easy');
-  const [gameState, setGameState] = useState<GameState>('playing');
-  const { board, initBoard, openCell, openAll, toggleFlag } = useBoard(gameModeToOptions(mode));
+type State = {
+  gameMode: GameMode;
+  gameState: GameState;
+  board: Board;
+};
 
-  const init = (mode: GameMode) => {
-    setMode(mode);
-    setGameState('playing');
-    initBoard(gameModeToOptions(mode));
+type Action =
+  | { type: 'init'; gameMode: GameMode }
+  | { type: 'reset' }
+  | { type: 'open'; index: number }
+  | { type: 'toggleFlag'; index: number };
+
+const initialize = (gameMode: GameMode): State => {
+  return {
+    gameMode,
+    gameState: 'initialized',
+    board: initBoard(gameModeToOptions(gameMode)),
   };
+};
 
-  // 同じモードでリセットする
-  const reset = () => {
-    init(mode);
-  };
+const open = (state: State, action: Extract<Action, { type: 'open' }>): State => {
+  // ゲームが終了していたら何もしない
+  if (state.gameState === 'completed' || state.gameState === 'failed') {
+    return state;
+  }
 
-  const open = (index: number) => {
-    // ゲームが終了していたら何もしない
-    if (gameState !== 'playing') return;
+  const result = openCell(state.board, action.index);
 
-    const result = openCell(index);
-
-    if (result.kind === 'Right') {
-      const updatedBoard = result.value;
-      if (isWin(updatedBoard)) {
-        setGameState('win');
-        openAll();
-      }
-    } else {
-      switch (result.value) {
-        case 'Mine Exploded':
-          openAll();
-          setGameState('lose');
-          break;
-        default:
-          break;
-      }
+  if (result.kind === 'Right') {
+    const updatedBoard = result.value;
+    if (isAllOpened(updatedBoard)) {
+      return {
+        ...state,
+        gameState: 'completed',
+        board: openAll(updatedBoard),
+      };
     }
-  };
+    return { ...state, board: updatedBoard };
+  } else {
+    switch (result.value) {
+      case 'Mine Exploded':
+        return {
+          ...state,
+          gameState: 'failed',
+          board: openAll(state.board),
+        };
+      default:
+        return state;
+    }
+  }
+};
 
-  const countFlags = () => board.data.flat().filter((cell) => cell.isFlagged).length;
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    // 初期化
+    case 'init':
+      return initialize(action.gameMode);
+    // 同じゲームモードで初期化
+    case 'reset':
+      return initialize(state.gameMode);
+    // マスを開く
+    case 'open':
+      return open(state, action);
+    case 'toggleFlag':
+      return {
+        ...state,
+        board: toggleFlag(state.board, action.index),
+      };
+    default:
+      return state;
+  }
+};
 
-  return { board, gameState, init, reset, open, toggleFlag, countFlags, mode };
+const usePlayGround = () => {
+  // reducer
+  const [state, dispatch] = useReducer(reducer, initialize('easy'));
+
+  // middleware
+  const flags = countFlags(state.board);
+
+  return { ...state, dispatch, flags };
 };
 
 export default usePlayGround;

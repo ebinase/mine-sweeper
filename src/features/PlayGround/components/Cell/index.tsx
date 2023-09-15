@@ -3,7 +3,7 @@
 import React from 'react';
 import OpenedCell from './OpenedCell';
 import UnopenedCell from './UnopenedCell';
-import { CellData } from '../../hooks/useBoard';
+import { CellData } from '../../functions/board';
 
 type Props = {
   cell: CellData;

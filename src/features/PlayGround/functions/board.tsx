@@ -1,7 +1,6 @@
 import { getRandomElements } from '@/functions/random';
 import type { Either } from '@/types/Either';
-import { useState } from 'react';
-import { convertToMatrix, getAroundItems, isInside, toMarixPosition } from '../functions/matrix';
+import { convertToMatrix, getAroundItems, isInside, toMarixPosition } from './matrix';
 
 export type BoardConfig = {
   rows: number;
@@ -131,7 +130,38 @@ const openEmptyArea = (board: Board, selected: [number, number]): Board => {
   return newBoard;
 };
 
-const openAll = (board: Board): Board => {
+// NOTE: PlainBoard型を作ってもいいかも
+export const initBoard = (options: BoardConfig): Board => {
+  return makePlainBoard(options);
+};
+
+export const openCell = (board: Board, cellId: number): Either<string, Board> => {
+  const position = toMarixPosition(cellId, board.meta.cols);
+
+  // 最初のターンだけ盤面を書き換える
+  const targetBoard = board.initialized ? board : setMines(board, cellId);
+
+  const targetCell = targetBoard.data[position[0]][position[1]];
+
+  if (!isInside(position, targetBoard.data)) {
+    return { kind: 'Left', value: 'Invalid position' };
+  }
+
+  if (targetCell.isOpen) {
+    return { kind: 'Left', value: 'Cell already opened' };
+  }
+
+  if (targetCell.isMine) {
+    return { kind: 'Left', value: 'Mine Exploded' };
+  }
+
+  const updatedBoard =
+    targetCell.value === 0 ? openEmptyArea(targetBoard, position) : open(targetBoard, position);
+
+  return { kind: 'Right', value: updatedBoard };
+};
+
+export const openAll = (board: Board): Board => {
   return {
     ...board,
     data: board.data.map((row) => {
@@ -142,60 +172,27 @@ const openAll = (board: Board): Board => {
   };
 };
 
-type Options = BoardConfig;
-
-const useBoard = (options: Options) => {
-  const [board, setBoard] = useState<Board>(makePlainBoard(options));
-
-  const initBoard = (options: BoardConfig) => {
-    setBoard(makePlainBoard(options));
+export const toggleFlag = (board: Board, cellId: number): Board => {
+  const updatedBoard = {
+    ...board,
+    data: board.data.map((row) => {
+      return row.map((cell) => {
+        if (cell.id === cellId) {
+          return { ...cell, isFlagged: !cell.isFlagged };
+        }
+        return cell;
+      });
+    }),
   };
 
-  const openCell = (cellId: number): Either<string, Board> => {
-    const position = toMarixPosition(cellId, board.meta.cols);
-
-    // 最初のターンだけ盤面を書き換える
-    const targetBoard = board.initialized ? board : setMines(board, cellId);
-
-    const targetCell = targetBoard.data[position[0]][position[1]];
-
-    if (!isInside(position, targetBoard.data)) {
-      return { kind: 'Left', value: 'Invalid position' };
-    }
-
-    if (targetCell.isOpen) {
-      return { kind: 'Left', value: 'Cell already opened' };
-    }
-
-    if (targetCell.isMine) {
-      return { kind: 'Left', value: 'Mine Exploded' };
-    }
-
-    const updatedBoard =
-      targetCell.value === 0 ? openEmptyArea(targetBoard, position) : open(targetBoard, position);
-
-    setBoard(updatedBoard);
-
-    return { kind: 'Right', value: updatedBoard };
-  };
-
-  const toggleFlag = (cellId: number): void => {
-    const updatedBoard = {
-      ...board,
-      data: board.data.map((row) => {
-        return row.map((cell) => {
-          if (cell.id === cellId) {
-            return { ...cell, isFlagged: !cell.isFlagged };
-          }
-          return cell;
-        });
-      }),
-    };
-
-    setBoard(updatedBoard);
-  };
-
-  return { board, initBoard, openCell, openAll: () => setBoard(openAll(board)), toggleFlag };
+  return updatedBoard;
 };
 
-export default useBoard;
+export const isAllOpened = (board: Board): boolean => {
+  return board.data.flat().every((cell) => {
+    return cell.isMine || cell.isOpen; // 爆弾以外のマスが全て開いていたら勝利
+  });
+};
+
+export const countFlags = (board: Board) =>
+  board.data.flat().filter((cell) => cell.isFlagged).length;
