@@ -80,12 +80,9 @@ const PlayGround = () => {
               <Cell
                 key={cell.id}
                 cell={cell}
-                handleClick={() => dispatch({ type: 'open', index: cell.id })}
+                dispatch={dispatch}
                 isFailed={gameState === 'failed'}
-                toggleFlag={() => {
-                  dispatch({ type: 'toggleFlag', index: cell.id });
-                }}
-              ></Cell>
+              />
             );
           })}
         </div>

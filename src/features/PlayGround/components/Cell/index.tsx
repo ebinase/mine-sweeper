@@ -4,15 +4,17 @@ import React from 'react';
 import OpenedCell from './OpenedCell';
 import UnopenedCell from './UnopenedCell';
 import { CellData } from '../../functions/board';
+import { Action } from '../../hooks/usePlayGround';
 
 type Props = {
   cell: CellData;
-  handleClick: (id: number) => void;
+  dispatch: React.Dispatch<Action>;
   isFailed: boolean;
-  toggleFlag: (id: number) => void;
 };
 
-const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false, toggleFlag }) => {
+const Cell: React.FC<Props> = ({ cell, dispatch, isFailed = false }) => {
+  const handleClick = () => dispatch({ type: 'open', index: cell.id });
+  const toggleFlag = () => dispatch({ type: 'toggleFlag', index: cell.id });
   return (
     <div className={'flex justify-center items-center aspect-square w-[8vmin] md:w-[6vmin]'}>
       {cell.isOpen ? (
@@ -24,4 +26,4 @@ const Cell: React.FC<Props> = ({ cell, handleClick, isFailed = false, toggleFlag
   );
 };
 
-export default Cell;
+export default React.memo(Cell);
