@@ -188,8 +188,16 @@ const toggleFlag = (board: Board, cellId: number): Board => {
   return updatedBoard;
 };
 
+const isAllOpened = (board: Board): boolean => {
+  return board.data.flat().every((cell) => {
+    return cell.isMine || cell.isOpen; // 爆弾以外のマスが全て開いていたら勝利
+  });
+};
+
+const countFlags = (board: Board) => board.data.flat().filter((cell) => cell.isFlagged).length;
+
 const useBoard = () => {
-  return { initBoard, openCell, openAll, toggleFlag };
+  return { initBoard, openCell, openAll, toggleFlag, isAllOpened, countFlags };
 };
 
 export default useBoard;
