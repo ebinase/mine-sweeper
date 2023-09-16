@@ -3,6 +3,7 @@ import {
   Board,
   BoardConfig,
   countFlags,
+  igniteMines,
   initBoard,
   isAllOpened,
   openAll,
@@ -74,7 +75,7 @@ const open = (state: State, action: Extract<Action, { type: 'open' }>): State =>
         return {
           ...state,
           gameState: 'failed',
-          board: openAll(state.board),
+          board: igniteMines(openAll(state.board)),
         };
       default:
         return state;

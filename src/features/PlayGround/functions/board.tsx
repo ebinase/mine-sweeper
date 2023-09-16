@@ -196,6 +196,17 @@ export const openAll = (board: Board): Board => {
   };
 };
 
+export const igniteMines = (board: Board): Board => {
+  return {
+    ...board,
+    data: board.data.map((row) => {
+      return row.map((cell) => {
+        return isMine(cell) ? { ...cell, content: { ...cell.content, exploded: true } } : cell;
+      });
+    }),
+  };
+};
+
 export const toggleFlag = (board: Board, cellId: number): Board => {
   const updatedBoard: Board = {
     ...board,
