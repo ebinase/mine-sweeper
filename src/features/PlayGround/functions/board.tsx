@@ -263,4 +263,10 @@ export const isAllOpened = (board: Board): boolean => {
   });
 };
 
-export const countFlags = (board: Board) => board.data.flat().filter(isFlagged).length;
+const filterFlaggedCells = (board: Board) => board.data.flat().filter(isFlagged);
+
+export const countNormalFlags = (board: Board) =>
+  filterFlaggedCells(board).filter((cell) => cell.state.flag === 'normal').length;
+
+export const countSuspiciousFlags = (board: Board) =>
+  filterFlaggedCells(board).filter((cell) => cell.state.flag === 'suspicious').length;
