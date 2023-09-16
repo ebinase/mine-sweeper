@@ -3,7 +3,7 @@
 import React from 'react';
 import OpenedCell from './OpenedCell';
 import UnopenedCell from './UnopenedCell';
-import { CellData } from '../../functions/board';
+import { CellData, isOpened } from '../../functions/board';
 
 type Props = {
   cell: CellData;
@@ -15,7 +15,7 @@ type Props = {
 const Cell: React.FC<Props> = ({ cell, isFailed = false, handleClick, toggleFlag }) => {
   return (
     <div className={'flex justify-center items-center aspect-square w-[8vmin] md:w-[6vmin]'}>
-      {cell.isOpen ? (
+      {isOpened(cell) ? (
         <OpenedCell cell={cell} isExploded={isFailed} />
       ) : (
         <UnopenedCell

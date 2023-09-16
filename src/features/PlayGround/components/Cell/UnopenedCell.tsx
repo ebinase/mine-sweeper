@@ -2,7 +2,7 @@
 
 import useLongPress from '@/hooks/useLongPress';
 import Image from 'next/image';
-import { CellData } from '../../functions/board';
+import { CellData, isFlagged } from '../../functions/board';
 import { useState } from 'react';
 
 type Props = {
@@ -26,7 +26,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag }) => {
   const handleLongPress = () => toggleFlag(cell.id);
   const toggleFlagAndQuestion = () => setIsSuspicious((prev) => !prev);
   const handleClickWithFlag = () =>
-    cell.isFlagged ? toggleFlagAndQuestion() : handleClick(cell.id); // フラグが立っているときは開放しない
+    isFlagged(cell) ? toggleFlagAndQuestion() : handleClick(cell.id); // フラグが立っているときは開放しない
   const longPressEvent = useLongPress(handleLongPress, handleClickWithFlag);
   // 右クリックでフラグを切り替える
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -39,7 +39,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag }) => {
       {...longPressEvent}
       onContextMenu={handleContextMenu}
     >
-      {cell.isFlagged &&
+      {isFlagged(cell) &&
         (isSuspicious ? (
           <span className='text-gray-300 md:text-2xl'>?</span>
         ) : (

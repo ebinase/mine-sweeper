@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { CellData } from '../../functions/board';
+import { CellData, isCount, isMine } from '../../functions/board';
 
 const COLOR_MAP: Record<number, string> = {
   1: 'text-blue-600',
@@ -18,18 +18,6 @@ const COLOR_MAP: Record<number, string> = {
 const resolveColor = (value: number) => {
   return value in COLOR_MAP ? COLOR_MAP[value] : 'text-black';
 };
-
-type BombContent = {
-  type: 'bomb';
-  isExploded: boolean;
-};
-
-type CountContent = {
-  type: 'count';
-  value: number;
-};
-
-type Content = BombContent | CountContent;
 
 const Bomb = ({ isExploded }: { isExploded: boolean }) => {
   return (
@@ -61,17 +49,13 @@ const Count = ({ value }: { value: number }) => {
   );
 };
 
-const OpenedCell: React.FC<{ cell: CellData; isExploded: boolean }> = ({ cell, isExploded }) => {
-  // Cellのデータ型ごと再検討する
-  const content: Content = cell.isMine
-    ? { type: 'bomb', isExploded }
-    : { type: 'count', value: cell.value as number };
+const OpenedCell: React.FC<{ cell: CellData; isExploded: boolean }> = ({ cell }) => {
   return (
     <div className={'h-full w-full bg-slate-50'}>
-      {content.type === 'bomb' ? (
-        <Bomb isExploded={content.isExploded} />
+      {isMine(cell) ? (
+        <Bomb isExploded={cell.content.exploded} />
       ) : (
-        <Count value={content.value} />
+        isCount(cell) && <Count value={cell.content.value} />
       )}
     </div>
   );
