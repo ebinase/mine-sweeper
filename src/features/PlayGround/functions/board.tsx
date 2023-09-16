@@ -19,7 +19,6 @@ export type CellData = {
 export type Board = {
   meta: BoardConfig;
   data: CellData[][];
-  initialized: boolean; // 設定に合わせて爆弾を配置したかどうか
 };
 
 const makePlainBoard = (config: BoardConfig): Board => {
@@ -37,11 +36,13 @@ const makePlainBoard = (config: BoardConfig): Board => {
   return {
     meta: config,
     data: convertToMatrix(plainBoardData, rows, cols),
-    initialized: false,
   };
 };
 
-const setMines = (board: Board, forceEmpty: CellData['id'] | undefined = undefined): Board => {
+export const setMines = (
+  board: Board,
+  forceEmpty: CellData['id'] | undefined = undefined,
+): Board => {
   // initialBoardの中からランダムにmines個の爆弾の位置を決める
   // forceEmptyが指定されている場合はそのマスと周囲のマスを除外する
   const noMineArea =
@@ -67,7 +68,7 @@ const setMines = (board: Board, forceEmpty: CellData['id'] | undefined = undefin
     }),
   };
 
-  return { ...setMineCount(boardWithMines), initialized: true };
+  return { ...setMineCount(boardWithMines) };
 };
 
 // 周囲の爆弾の数を数える
@@ -137,12 +138,9 @@ export const initBoard = (options: BoardConfig): Board => {
 export const openCell = (board: Board, cellId: number): Either<string, Board> => {
   const position = toMarixPosition(cellId, board.meta.cols);
 
-  // 最初のターンだけ盤面を書き換える
-  const targetBoard = board.initialized ? board : setMines(board, cellId);
+  const targetCell = board.data[position[0]][position[1]];
 
-  const targetCell = targetBoard.data[position[0]][position[1]];
-
-  if (!isInside(position, targetBoard.data)) {
+  if (!isInside(position, board.data)) {
     return { kind: 'Left', value: 'Invalid position' };
   }
 
@@ -155,7 +153,7 @@ export const openCell = (board: Board, cellId: number): Either<string, Board> =>
   }
 
   const updatedBoard =
-    targetCell.value === 0 ? openEmptyArea(targetBoard, position) : open(targetBoard, position);
+    targetCell.value === 0 ? openEmptyArea(board, position) : open(board, position);
 
   return { kind: 'Right', value: updatedBoard };
 };

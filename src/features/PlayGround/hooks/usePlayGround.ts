@@ -7,6 +7,7 @@ import {
   isAllOpened,
   openAll,
   openCell,
+  setMines,
   toggleFlag,
 } from '../functions/board';
 
@@ -51,7 +52,11 @@ const open = (state: State, action: Extract<Action, { type: 'open' }>): State =>
     return state;
   }
 
-  const result = openCell(state.board, action.index);
+  // 最初のターンだけクリックした場所が空白になるように盤面を強制的に書き換える
+  const board =
+    state.gameState === 'initialized' ? setMines(state.board, action.index) : state.board;
+
+  const result = openCell(board, action.index);
 
   if (result.kind === 'Right') {
     const updatedBoard = result.value;
@@ -62,7 +67,7 @@ const open = (state: State, action: Extract<Action, { type: 'open' }>): State =>
         board: openAll(updatedBoard),
       };
     }
-    return { ...state, board: updatedBoard };
+    return { ...state, gameState: 'playing', board: updatedBoard };
   } else {
     switch (result.value) {
       case 'Mine Exploded':
