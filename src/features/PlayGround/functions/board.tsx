@@ -17,15 +17,19 @@ export type CellData = {
   state: 'opened' | 'unopened' | 'flagged';
 };
 
-export function isMine(cell: CellData): cell is CellData & { content: {type: 'mine', exploded: boolean }} {
+export function isMine(
+  cell: CellData,
+): cell is CellData & { content: { type: 'mine'; exploded: boolean } } {
   return cell.content.type === 'mine';
 }
 
-export function isCount(cell: CellData): cell is CellData & { content: {type: 'count', value: number }} {
+export function isCount(
+  cell: CellData,
+): cell is CellData & { content: { type: 'count'; value: number } } {
   return cell.content.type === 'count';
 }
 
-export function isEmpty(cell: CellData): cell is CellData & { content: {type: 'empty'}} {
+export function isEmpty(cell: CellData): cell is CellData & { content: { type: 'empty' } } {
   return cell.content.type === 'empty';
 }
 
@@ -78,29 +82,34 @@ export const setMines = (
     board.meta.mines,
   );
 
-  const boardWithMines = {
+  const boardWithMines: Board = {
     ...board,
     data: board.data.map((row) => {
       return row.map((cell) => {
-        return minePositions.includes(cell.id) ? { ...cell, isMine: true } : cell;
+        return minePositions.includes(cell.id)
+          ? { ...cell, content: { type: 'mine', exploded: false } }
+          : cell;
       });
     }),
   };
 
-  return { ...setMineCount(boardWithMines) };
+  return setMineCount(boardWithMines);
 };
 
 // 周囲の爆弾の数を数える
 const setMineCount = (board: Board): Board => {
   // matrixの要素を一つずつ見ていく
-  const newBoardData = board.data.map((row, i) => {
+  const newBoardData: CellData[][] = board.data.map((row, i) => {
     return row.map((cell, j) => {
-      // すでに爆弾だったら何もしない
+      // 爆弾だったら何もしない
       if (isMine(cell)) return cell;
 
       // 周囲8マスの爆弾の数を数える
       const count = getAroundItems(board.data, [i, j]).filter((item) => isMine(item)).length;
-      return { ...cell, value: count };
+      return {
+        ...cell,
+        content: count === 0 ? { type: 'empty' } : { type: 'count', value: count },
+      };
     });
   });
 
@@ -114,7 +123,7 @@ const open = (board: Board, selected: [number, number]): Board => {
     data: board.data.map((row, i) => {
       return row.map((cell, j) => {
         if (i === selected[0] && j === selected[1]) {
-          return { ...cell, isOpen: true };
+          return { ...cell, state: 'opened' };
         }
         return cell;
       });
@@ -171,8 +180,7 @@ export const openCell = (board: Board, cellId: number): Either<string, Board> =>
     return { kind: 'Left', value: 'Mine Exploded' };
   }
 
-  const updatedBoard =
-    isEmpty(targetCell) ? openEmptyArea(board, position) : open(board, position);
+  const updatedBoard = isEmpty(targetCell) ? openEmptyArea(board, position) : open(board, position);
 
   return { kind: 'Right', value: updatedBoard };
 };
@@ -182,21 +190,19 @@ export const openAll = (board: Board): Board => {
     ...board,
     data: board.data.map((row) => {
       return row.map((cell) => {
-        return { ...cell, isOpen: true };
+        return { ...cell, state: 'opened' };
       });
     }),
   };
 };
 
 export const toggleFlag = (board: Board, cellId: number): Board => {
-  const updatedBoard = {
+  const updatedBoard: Board = {
     ...board,
     data: board.data.map((row) => {
       return row.map((cell) => {
-        if (cell.id === cellId) {
-          return { ...cell, isFlagged: !isFlagged(cell) };
-        }
-        return cell;
+        if (cell.id !== cellId || isOpened(cell)) return cell;
+        return { ...cell, state: isFlagged(cell) ? 'unopened' : 'flagged' };
       });
     }),
   };
@@ -210,5 +216,4 @@ export const isAllOpened = (board: Board): boolean => {
   });
 };
 
-export const countFlags = (board: Board) =>
-  board.data.flat().filter(isFlagged).length;
+export const countFlags = (board: Board) => board.data.flat().filter(isFlagged).length;
