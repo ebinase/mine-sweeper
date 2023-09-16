@@ -1,6 +1,8 @@
 ## What's this?
 Simple Minesweeper app developed with Next.js.
 
+<img width="600" alt="minesweeper-play-image" src="https://github.com/ebinase/mine-sweeper/assets/54468945/9a26d127-4986-4112-ab61-d603d10ae21a">
+
 ## Getting Started
 
 run the development server:
