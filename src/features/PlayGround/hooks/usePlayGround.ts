@@ -2,7 +2,8 @@ import { useReducer } from 'react';
 import {
   Board,
   BoardConfig,
-  countFlags,
+  countNormalFlags,
+  countSuspectedFlags,
   igniteMines,
   initBoard,
   isAllOpened,
@@ -116,9 +117,10 @@ const usePlayGround = () => {
   const [state, dispatch] = useReducer(reducer, initialize('easy'));
 
   // middleware
-  const flags = countFlags(state.board);
+  const normalFlags = countNormalFlags(state.board);
+  const suspectedflags = countSuspectedFlags(state.board);
 
-  return { ...state, dispatch, flags };
+  return { ...state, dispatch, normalFlags, suspectedflags };
 };
 
 export default usePlayGround;

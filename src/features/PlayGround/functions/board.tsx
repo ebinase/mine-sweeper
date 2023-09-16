@@ -14,7 +14,7 @@ export type CellData = {
     | { type: 'mine'; exploded: boolean }
     | { type: 'count'; value: number }
     | { type: 'empty' };
-  state: { type: 'opened' } | { type: 'unopened'; flag: 'normal' | 'suspicious' | 'none' };
+  state: { type: 'opened' } | { type: 'unopened'; flag: 'normal' | 'suspected' | 'none' };
 };
 
 export function isMine(
@@ -42,7 +42,7 @@ export function isOpened(
 export function isUnopened(cell: CellData): cell is {
   id: number;
   content: CellData['content'];
-  state: { type: 'unopened'; flag: 'normal' | 'suspicious' | 'none' };
+  state: { type: 'unopened'; flag: 'normal' | 'suspected' | 'none' };
 } {
   return cell.state.type === 'unopened';
 }
@@ -50,7 +50,7 @@ export function isUnopened(cell: CellData): cell is {
 export function isFlagged(cell: CellData): cell is {
   id: number;
   content: CellData['content'];
-  state: { type: 'unopened'; flag: 'normal' | 'suspicious' };
+  state: { type: 'unopened'; flag: 'normal' | 'suspected' };
 } {
   return isUnopened(cell) && cell.state.flag !== 'none';
 }
@@ -249,7 +249,7 @@ export const switchFlagType = (board: Board, cellId: number): Board => {
           ...cell,
           state: {
             ...cell.state,
-            flag: cell.state.flag === 'normal' ? 'suspicious' : 'normal',
+            flag: cell.state.flag === 'normal' ? 'suspected' : 'normal',
           },
         };
       });
@@ -263,4 +263,10 @@ export const isAllOpened = (board: Board): boolean => {
   });
 };
 
-export const countFlags = (board: Board) => board.data.flat().filter(isFlagged).length;
+const filterFlaggedCells = (board: Board) => board.data.flat().filter(isFlagged);
+
+export const countNormalFlags = (board: Board) =>
+  filterFlaggedCells(board).filter((cell) => cell.state.flag === 'normal').length;
+
+export const countSuspectedFlags = (board: Board) =>
+  filterFlaggedCells(board).filter((cell) => cell.state.flag === 'suspected').length;

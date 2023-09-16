@@ -4,10 +4,10 @@ import { useCallback, useEffect, useRef } from 'react';
 import Cell from './components/Cell';
 import useConfetti from '@/hooks/useConfetti';
 import usePlayGround, { GameMode } from './hooks/usePlayGround';
-import Image from 'next/image';
+import { Header } from './components/Header';
 
 const PlayGround = () => {
-  const { board, gameState, gameMode, dispatch, flags } = usePlayGround();
+  const { board, gameState, gameMode, dispatch, normalFlags, suspectedflags } = usePlayGround();
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
 
@@ -53,19 +53,7 @@ const PlayGround = () => {
 
   return (
     <div>
-      <header className='flex justify-between items-center py-0.5'>
-        <h1>Mine Sweeper</h1>
-        <div className='flex gap-2'>
-          <div className='flex items-center'>
-            <Image src='/flag.png' alt='flag' width={15} height={15} />
-            <span className='text-xs'>×{flags}</span>
-          </div>
-          <div className='flex items-center'>
-            <Image src='/mine.svg' alt='exploded mine' width={15} height={15} />
-            <span className='text-xs'>×{board.meta.mines}</span>
-          </div>
-        </div>
-      </header>
+      <Header normalFlags={normalFlags} suspectedFlags={suspectedflags} boardConfig={board.meta} />
       <div
         className={
           'overflow-auto w-fit h-fit max-w-[90vw] max-h-[55vh] md:max-h-[70vh] bg-black/50 dark:bg-white/50 select-none'
