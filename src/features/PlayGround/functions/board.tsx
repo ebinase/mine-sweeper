@@ -14,7 +14,7 @@ export type CellData = {
     | { type: 'mine'; exploded: boolean }
     | { type: 'count'; value: number }
     | { type: 'empty' };
-  state: 'opened' | 'unopened' | 'flagged';
+  state: { type: 'opened' } | { type: 'unopened'; flag: 'normal' | 'suspicious' | 'none' };
 };
 
 export function isMine(
@@ -33,12 +33,26 @@ export function isEmpty(cell: CellData): cell is CellData & { content: { type: '
   return cell.content.type === 'empty';
 }
 
-export function isOpened(cell: CellData): cell is CellData & { state: 'opened' } {
-  return cell.state === 'opened';
+export function isOpened(
+  cell: CellData,
+): cell is { id: number; content: CellData['content']; state: { type: 'opened' } } {
+  return cell.state.type === 'opened';
 }
 
-export function isFlagged(cell: CellData): cell is CellData & { state: 'flagged' } {
-  return cell.state === 'flagged';
+export function isUnopened(cell: CellData): cell is {
+  id: number;
+  content: CellData['content'];
+  state: { type: 'unopened'; flag: 'normal' | 'suspicious' | 'none' };
+} {
+  return cell.state.type === 'unopened';
+}
+
+export function isFlagged(cell: CellData): cell is {
+  id: number;
+  content: CellData['content'];
+  state: { type: 'unopened'; flag: 'normal' | 'suspicious' };
+} {
+  return isUnopened(cell) && cell.state.flag !== 'none';
 }
 
 export type Board = {
@@ -52,7 +66,7 @@ const makePlainBoard = (config: BoardConfig): Board => {
     return {
       id: i,
       content: { type: 'empty' },
-      state: 'unopened',
+      state: { type: 'unopened', flag: 'none' },
     };
   });
 
@@ -123,7 +137,7 @@ const open = (board: Board, selected: [number, number]): Board => {
     data: board.data.map((row, i) => {
       return row.map((cell, j) => {
         if (i === selected[0] && j === selected[1]) {
-          return { ...cell, state: 'opened' };
+          return { ...cell, state: { type: 'opened' } };
         }
         return cell;
       });
@@ -190,7 +204,7 @@ export const openAll = (board: Board): Board => {
     ...board,
     data: board.data.map((row) => {
       return row.map((cell) => {
-        return { ...cell, state: 'opened' };
+        return { ...cell, state: { type: 'opened' } };
       });
     }),
   };
@@ -208,17 +222,39 @@ export const igniteMines = (board: Board): Board => {
 };
 
 export const toggleFlag = (board: Board, cellId: number): Board => {
-  const updatedBoard: Board = {
+  return {
     ...board,
     data: board.data.map((row) => {
       return row.map((cell) => {
-        if (cell.id !== cellId || isOpened(cell)) return cell;
-        return { ...cell, state: isFlagged(cell) ? 'unopened' : 'flagged' };
+        if (cell.id !== cellId || !isUnopened(cell)) return cell;
+        return {
+          ...cell,
+          state: {
+            ...cell.state,
+            flag: cell.state.flag === 'none' ? 'normal' : 'none', // フラグの初期値はハテナではなく旗
+          },
+        };
       });
     }),
   };
+};
 
-  return updatedBoard;
+export const switchFlagType = (board: Board, cellId: number): Board => {
+  return {
+    ...board,
+    data: board.data.map((row) => {
+      return row.map((cell) => {
+        if (cell.id !== cellId || !isUnopened(cell)) return cell;
+        return {
+          ...cell,
+          state: {
+            ...cell.state,
+            flag: cell.state.flag === 'normal' ? 'suspicious' : 'normal',
+          },
+        };
+      });
+    }),
+  };
 };
 
 export const isAllOpened = (board: Board): boolean => {
