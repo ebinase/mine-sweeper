@@ -9,6 +9,7 @@ import {
   openAll,
   openCell,
   setMines,
+  switchFlagType,
   toggleFlag,
 } from '../functions/board';
 
@@ -37,7 +38,8 @@ type Action =
   | { type: 'init'; gameMode: GameMode }
   | { type: 'reset' }
   | { type: 'open'; index: number }
-  | { type: 'toggleFlag'; index: number };
+  | { type: 'toggleFlag'; index: number }
+  | { type: 'switchFlagType'; index: number };
 
 const initialize = (gameMode: GameMode): State => {
   return {
@@ -98,6 +100,11 @@ const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         board: toggleFlag(state.board, action.index),
+      };
+    case 'switchFlagType':
+      return {
+        ...state,
+        board: switchFlagType(state.board, action.index),
       };
     default:
       return state;

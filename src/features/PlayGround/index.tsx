@@ -46,6 +46,10 @@ const PlayGround = () => {
     (index: number) => dispatch({ type: 'toggleFlag', index }),
     [dispatch],
   );
+  const switchFlagType = useCallback(
+    (index: number) => dispatch({ type: 'switchFlagType', index }),
+    [dispatch],
+  );
 
   return (
     <div>
@@ -83,6 +87,7 @@ const PlayGround = () => {
                 isFailed={gameState === 'failed'}
                 handleClick={handleClick}
                 toggleFlag={toggleFlag}
+                switchFlagType={switchFlagType}
               />
             );
           })}

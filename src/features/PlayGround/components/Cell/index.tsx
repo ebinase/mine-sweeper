@@ -10,9 +10,16 @@ type Props = {
   isFailed: boolean;
   handleClick: (index: number) => void;
   toggleFlag: (index: number) => void;
+  switchFlagType: (id: number) => void;
 };
 
-const Cell: React.FC<Props> = ({ cell, isFailed = false, handleClick, toggleFlag }) => {
+const Cell: React.FC<Props> = ({
+  cell,
+  isFailed = false,
+  handleClick,
+  toggleFlag,
+  switchFlagType,
+}) => {
   return (
     <div className={'flex justify-center items-center aspect-square w-[8vmin] md:w-[6vmin]'}>
       {isOpened(cell) ? (
@@ -22,6 +29,7 @@ const Cell: React.FC<Props> = ({ cell, isFailed = false, handleClick, toggleFlag
           cell={cell}
           handleClick={() => handleClick(cell.id)}
           toggleFlag={() => toggleFlag(cell.id)}
+          switchFlagType={() => switchFlagType(cell.id)}
         />
       )}
     </div>
