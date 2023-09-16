@@ -7,7 +7,7 @@ import usePlayGround, { GameMode } from './hooks/usePlayGround';
 import Image from 'next/image';
 
 const PlayGround = () => {
-  const { board, gameState, gameMode, dispatch, flags } = usePlayGround();
+  const { board, gameState, gameMode, dispatch, normalFlags } = usePlayGround();
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
 
@@ -58,7 +58,7 @@ const PlayGround = () => {
         <div className='flex gap-2'>
           <div className='flex items-center'>
             <Image src='/flag.png' alt='flag' width={15} height={15} />
-            <span className='text-xs'>×{flags}</span>
+            <span className='text-xs'>×{normalFlags}</span>
           </div>
           <div className='flex items-center'>
             <Image src='/mine.svg' alt='exploded mine' width={15} height={15} />
