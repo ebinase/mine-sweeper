@@ -3,7 +3,7 @@ import {
   Board,
   BoardConfig,
   countNormalFlags,
-  countSuspiciousFlags,
+  countSuspectedFlags,
   igniteMines,
   initBoard,
   isAllOpened,
@@ -118,9 +118,9 @@ const usePlayGround = () => {
 
   // middleware
   const normalFlags = countNormalFlags(state.board);
-  const suspiciousflags = countSuspiciousFlags(state.board);
+  const suspectedflags = countSuspectedFlags(state.board);
 
-  return { ...state, dispatch, normalFlags, suspiciousflags };
+  return { ...state, dispatch, normalFlags, suspectedflags };
 };
 
 export default usePlayGround;
