@@ -2,18 +2,16 @@
 
 import useLongPress from '@/hooks/useLongPress';
 import Image from 'next/image';
-import { CellData } from '../../functions/board';
-import { useState } from 'react';
+import { isFlagged, type CellData } from '../../functions/board';
 
 type Props = {
   handleClick: (id: number) => void;
   cell: CellData;
   toggleFlag: (id: number) => void;
+  switchFlagType: (id: number) => void;
 };
 
-const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag }) => {
-  // フラグをハテナ表示に切り替えできるようにする
-  const [isSuspicious, setIsSuspicious] = useState(false);
+const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFlagType }) => {
   /**
    * フラグなし
    * - 左クリック: 開放
@@ -24,9 +22,8 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag }) => {
    * - 右クリック: フラグを外す
    */
   const handleLongPress = () => toggleFlag(cell.id);
-  const toggleFlagAndQuestion = () => setIsSuspicious((prev) => !prev);
   const handleClickWithFlag = () =>
-    cell.isFlagged ? toggleFlagAndQuestion() : handleClick(cell.id); // フラグが立っているときは開放しない
+    isFlagged(cell) ? switchFlagType(cell.id) : handleClick(cell.id); // フラグが立っているときは開放しない
   const longPressEvent = useLongPress(handleLongPress, handleClickWithFlag);
   // 右クリックでフラグを切り替える
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -39,8 +36,8 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag }) => {
       {...longPressEvent}
       onContextMenu={handleContextMenu}
     >
-      {cell.isFlagged &&
-        (isSuspicious ? (
+      {isFlagged(cell) &&
+        (cell.state.flag === 'suspicious' ? (
           <span className='text-gray-300 md:text-2xl'>?</span>
         ) : (
           <Image
