@@ -151,22 +151,29 @@ const openEmptyArea = (board: Board, selected: [number, number]): Board => {
   if (isOpened(selectedCell) || !isEmpty(selectedCell)) return board;
 
   // flood fill
-  let queue = [selected];
+  // はじめはキューで実装していたが、Array.shift()がO(n)なので遅いためスタックで実装
+  let stack = [selected];
+  // 同じマスを何度も開かないようにするためにSetを使う
+  let checkList = new Set<CellData['id']>();
+
   let newBoard = board;
 
   // TODO: 効率化
-  while (queue.length > 0) {
-    const target = queue.shift() as [number, number];
+  while (stack.length > 0) {
+    const target = stack.pop() as [number, number];
+
     newBoard = open(newBoard, target);
 
+    if (!isEmpty(newBoard.data[target[0]][target[1]])) continue;
+
     // 何もないマスだったら周囲のマスをキューに追加
-    if (isEmpty(newBoard.data[target[0]][target[1]])) {
-      getAroundItems(newBoard.data, target)
-        .filter((cell) => !isOpened(cell) && !isMine(cell))
-        .forEach((cell) => {
-          queue.push(toMarixPosition(cell.id, newBoard.meta.cols));
-        });
-    }
+    getAroundItems(newBoard.data, target)
+      .filter((cell) => !isOpened(cell) && !isMine(cell))
+      .filter((cell) => !checkList.has(cell.id))
+      .forEach((cell) => {
+        stack.push(toMarixPosition(cell.id, newBoard.meta.cols));
+        checkList.add(cell.id);
+      });
   }
 
   return newBoard;
