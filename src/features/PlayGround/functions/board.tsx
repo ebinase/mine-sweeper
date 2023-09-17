@@ -145,34 +145,8 @@ const open = (board: Board, selected: [number, number]): Board => {
   };
 };
 
-export const oldOpenEmptyArea = (board: Board, selected: [number, number]): Board => {
-  const selectedCell = board.data[selected[0]][selected[1]];
-  if (isOpened(selectedCell) || !isEmpty(selectedCell)) return board;
-
-  // flood fill
-  let queue = [selected];
-  let newBoard = board;
-
-  // TODO: 効率化
-  while (queue.length > 0) {
-    const target = queue.shift() as [number, number];
-    newBoard = open(newBoard, target);
-
-    // 何もないマスだったら周囲のマスをキューに追加
-    if (isEmpty(newBoard.data[target[0]][target[1]])) {
-      getAroundItems(newBoard.data, target)
-        .filter((cell) => !isOpened(cell) && !isMine(cell))
-        .forEach((cell) => {
-          queue.push(toMarixPosition(cell.id, newBoard.meta.cols));
-        });
-    }
-  }
-
-  return newBoard;
-};
-
 // 何もないマスを一括開放する
-export const openEmptyArea = (board: Board, selected: [number, number]): Board => {
+const openEmptyArea = (board: Board, selected: [number, number]): Board => {
   const selectedCell = board.data[selected[0]][selected[1]];
   if (isOpened(selectedCell) || !isEmpty(selectedCell)) return board;
 
