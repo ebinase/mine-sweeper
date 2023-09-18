@@ -30,12 +30,24 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFl
     e.preventDefault();
     toggleFlag(cell.id);
   };
+
+  // キーボード操作
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleClickWithFlag();
+    } else if (e.key === 'f' || e.key === 'F') {
+      toggleFlag(cell.id);
+    }
+  };
+
   return (
     <button
       type='button'
       className='h-full w-full flex justify-center items-center bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] focus:bg-slate-400'
       {...longPressEvent}
       onContextMenu={handleContextMenu}
+      onKeyDown={handleKeyDown}
       aria-label={`Cell at position ${cell.id}`}
     >
       {isFlagged(cell) &&
