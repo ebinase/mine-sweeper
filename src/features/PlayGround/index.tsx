@@ -5,6 +5,7 @@ import Cell from './components/Cell';
 import useConfetti from '@/hooks/useConfetti';
 import usePlayGround, { GameMode } from './hooks/usePlayGround';
 import { Header } from './components/Header';
+import { toMarixPosition } from './functions/matrix';
 
 const PlayGround = () => {
   const { board, gameState, gameMode, dispatch, normalFlags, suspectedflags } = usePlayGround();
@@ -68,10 +69,13 @@ const PlayGround = () => {
           }}
         >
           {board.data.flat().map((cell) => {
+            const [row, col] = toMarixPosition(cell.id, board.meta.cols);
             return (
               <Cell
                 key={cell.id}
                 cell={cell}
+                row={row}
+                col={col}
                 isFailed={gameState === 'failed'}
                 handleClick={handleClick}
                 toggleFlag={toggleFlag}
