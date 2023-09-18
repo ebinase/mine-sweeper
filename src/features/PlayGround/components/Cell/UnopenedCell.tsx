@@ -26,15 +26,17 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFl
     isFlagged(cell) ? switchFlagType(cell.id) : handleClick(cell.id); // フラグが立っているときは開放しない
   const longPressEvent = useLongPress(handleLongPress, handleClickWithFlag);
   // 右クリックでフラグを切り替える
-  const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleContextMenu = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     toggleFlag(cell.id);
   };
   return (
-    <div
+    <button
+      type='button'
       className='h-full w-full flex justify-center items-center bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff]'
       {...longPressEvent}
       onContextMenu={handleContextMenu}
+      aria-label={`Cell at position ${cell.id}`}
     >
       {isFlagged(cell) &&
         (cell.state.flag === 'suspected' ? (
@@ -48,7 +50,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFl
             className={'w-3/5 lg:animate-none animate-slide-in-blurred-top pointer-events-none'}
           />
         ))}
-    </div>
+    </button>
   );
 };
 
