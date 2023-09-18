@@ -5,6 +5,7 @@ import Cell from './components/Cell';
 import useConfetti from '@/hooks/useConfetti';
 import usePlayGround, { GameMode } from './hooks/usePlayGround';
 import { Header } from './components/Header';
+import { toMarixPosition } from './functions/matrix';
 
 const PlayGround = () => {
   const { board, gameState, gameMode, dispatch, normalFlags, suspectedflags } = usePlayGround();
@@ -68,10 +69,13 @@ const PlayGround = () => {
           }}
         >
           {board.data.flat().map((cell) => {
+            const [row, col] = toMarixPosition(cell.id, board.meta.cols);
             return (
               <Cell
                 key={cell.id}
                 cell={cell}
+                row={row}
+                col={col}
                 isFailed={gameState === 'failed'}
                 handleClick={handleClick}
                 toggleFlag={toggleFlag}
@@ -83,7 +87,7 @@ const PlayGround = () => {
       </div>
       <div className='py-2'>
         <select
-          className='bg-slate-500 p-1 rounded-none text-sm'
+          className='bg-slate-500 p-1 rounded-none text-sm text-slate-100 focus:bg-slate-400 focus:scale-110 origin-left'
           onChange={(e) => {
             dispatch({ type: 'init', gameMode: e.target.value as GameMode });
           }}
@@ -103,7 +107,7 @@ const PlayGround = () => {
       {(gameState === 'completed' || gameState === 'failed') && (
         <div className='flex flex-col items-center py-10 gap-3'>
           <button
-            className='bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] text-white px-3 py-1 text-sm'
+            className='bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] text-white px-3 py-1 text-sm focus:bg-slate-400 focus:scale-110 origin-center'
             onClick={() => {
               dispatch({ type: 'reset' });
             }}
