@@ -33,7 +33,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFl
   return (
     <button
       type='button'
-      className='h-full w-full flex justify-center items-center bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff]'
+      className='h-full w-full flex justify-center items-center bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] focus:bg-slate-400'
       {...longPressEvent}
       onContextMenu={handleContextMenu}
       aria-label={`Cell at position ${cell.id}`}
