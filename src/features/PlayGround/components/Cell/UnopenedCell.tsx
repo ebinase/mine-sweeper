@@ -33,7 +33,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFl
 
   // キーボード操作
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handleClickWithFlag();
     } else if (e.key === 'f' || e.key === 'F') {
