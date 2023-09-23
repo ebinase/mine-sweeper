@@ -49,7 +49,7 @@ const Count = ({ value }: { value: number }) => {
   );
 };
 
-const OpenedCell: React.FC<{ cell: CellData; isExploded: boolean }> = ({ cell }) => {
+const OpenedCell: React.FC<{ cell: CellData }> = ({ cell }) => {
   return (
     <div className={'h-full w-full bg-slate-50'}>
       {isMine(cell) ? (
