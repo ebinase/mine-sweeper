@@ -81,7 +81,6 @@ const PlayGround = () => {
                 cell={cell}
                 row={row}
                 col={col}
-                isFailed={gameState === 'failed'}
                 handleClick={open}
                 toggleFlag={toggleFlag}
                 switchFlagType={switchFlagType}

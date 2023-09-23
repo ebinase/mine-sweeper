@@ -9,7 +9,6 @@ type Props = {
   cell: CellData;
   row: number;
   col: number;
-  isFailed: boolean;
   handleClick: (index: number) => void;
   toggleFlag: (index: number) => void;
   switchFlagType: (id: number) => void;
@@ -52,7 +51,6 @@ const Cell: React.FC<Props> = ({
   cell,
   row,
   col,
-  isFailed = false,
   handleClick,
   toggleFlag,
   switchFlagType,
@@ -95,7 +93,7 @@ const Cell: React.FC<Props> = ({
       onKeyDown={handleArrowMove}
     >
       {isOpened(cell) ? (
-        <OpenedCell cell={cell} isExploded={isFailed} />
+        <OpenedCell cell={cell} />
       ) : (
         <UnopenedCell
           cell={cell}
