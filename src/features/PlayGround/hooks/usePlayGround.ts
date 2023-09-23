@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 import {
   Board,
   BoardConfig,
@@ -117,8 +117,15 @@ const usePlayGround = () => {
   const [state, dispatch] = useReducer(reducer, initialize('easy'));
 
   // middleware
-  const normalFlags = countNormalFlags(state.board);
-  const suspectedflags = countSuspectedFlags(state.board);
+  const [normalFlags, setNormalFlags] = useState(0);
+  const [suspectedflags, setSuspectedFlags] = useState(0);
+  useEffect(() => {
+    // クリアor失敗した場合にフラグの数が0になるが、終了時点でのフラグ数をキープしておくために終了時は更新しない
+    if (state.gameState === 'completed' || state.gameState === 'failed') return;
+      
+    setNormalFlags(countNormalFlags(state.board));
+    setSuspectedFlags(countSuspectedFlags(state.board));
+  }, [state]);
 
   return { ...state, dispatch, normalFlags, suspectedflags };
 };
