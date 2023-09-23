@@ -8,7 +8,7 @@ import { Header } from './components/Header';
 import { toMarixPosition } from './functions/matrix';
 
 const PlayGround = () => {
-  const { board, gameState, gameMode, dispatch, normalFlags, suspectedflags } = usePlayGround();
+  const { board, gameState, gameMode, dispatch, flags } = usePlayGround();
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +54,7 @@ const PlayGround = () => {
 
   return (
     <div>
-      <Header normalFlags={normalFlags} suspectedFlags={suspectedflags} boardConfig={board.meta} />
+      <Header normalFlags={flags.normal} suspectedFlags={flags.suspected} boardConfig={board.meta} />
       <div
         className={
           'overflow-auto w-fit h-fit max-w-[90vw] max-h-[55vh] md:max-h-[70vh] bg-black/50 dark:bg-white/50 select-none'

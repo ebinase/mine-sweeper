@@ -118,7 +118,7 @@ const usePlayGround = () => {
 
   // middleware
   const [normalFlags, setNormalFlags] = useState(0);
-  const [suspectedflags, setSuspectedFlags] = useState(0);
+  const [suspectedFlags, setSuspectedFlags] = useState(0);
   useEffect(() => {
     // クリアor失敗した場合にフラグの数が0になるが、終了時点でのフラグ数をキープしておくために終了時は更新しない
     if (state.gameState === 'completed' || state.gameState === 'failed') return;
@@ -127,7 +127,7 @@ const usePlayGround = () => {
     setSuspectedFlags(countSuspectedFlags(state.board));
   }, [state]);
 
-  return { ...state, dispatch, normalFlags, suspectedflags };
+  return { ...state, dispatch, flags: { normal: normalFlags, suspected: suspectedFlags } };
 };
 
 export default usePlayGround;
