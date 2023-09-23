@@ -59,7 +59,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFl
             alt='red flag'
             width={30}
             height={30}
-            className={'w-3/5 lg:animate-none animate-slide-in-blurred-top pointer-events-none'}
+            className={'w-3/5 pointer-events-none'}
           />
         ))}
     </button>
