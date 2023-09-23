@@ -55,8 +55,8 @@ const PlayGround = () => {
   }, [gameMode]);
 
   return (
-    <div className='flex flex-col items-stretch'>
-      <div className='py-0.5'>
+    <div className='h-full pt-[7vh] flex flex-col items-stretch'>
+      <div className='py-0.5 flex flex-col justify-end'>
         <GameInfoHeader
           normalFlags={flags.normal}
           suspectedFlags={flags.suspected}
@@ -65,7 +65,7 @@ const PlayGround = () => {
       </div>
       <div
         className={
-          'overflow-auto w-fit h-fit max-w-[90vw] max-h-[55vh] md:max-h-[70vh] bg-black/50 dark:bg-white/50 select-none'
+          'overflow-auto max-w-[90vw] max-h-[55vh] md:max-h-[65vh] bg-black/50 dark:bg-white/50 select-none'
         }
         ref={boardRef}
       >
@@ -76,7 +76,7 @@ const PlayGround = () => {
       </div>
 
       {(gameState === 'completed' || gameState === 'failed') && (
-        <div className='py-10'>
+        <div className='py-5'>
           <GameContextAction restart={restart} />
         </div>
       )}
