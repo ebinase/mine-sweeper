@@ -8,7 +8,7 @@ type Props = Pick<MineSweeper, 'board' | 'open' | 'toggleFlag' | 'switchFlagType
 
 const Board: React.FC<Props> = ({ board, open, toggleFlag, switchFlagType }) => {
   return (
-    <div
+    <section
       className={'w-fit h-fit bg-slate-700 grid gap-1 p-2'}
       style={{
         gridTemplateColumns: `repeat(${board.meta.cols}, 1fr)`,
@@ -29,7 +29,7 @@ const Board: React.FC<Props> = ({ board, open, toggleFlag, switchFlagType }) => 
           />
         );
       })}
-    </div>
+    </section>
   );
 };
 

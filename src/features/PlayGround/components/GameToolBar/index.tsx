@@ -6,7 +6,7 @@ type Props = Pick<MineSweeper, 'init' | 'gameMode' | 'settings'>;
 
 export const GameToolBar: React.FC<Props> = ({ init, gameMode, settings }) => {
   return (
-    <div className='felx justify-start'>
+    <nav className='felx justify-start'>
       <select
         className='bg-slate-500 p-1.5 rounded-none text-sm text-slate-100 focus:bg-slate-400 focus:scale-110 origin-left'
         onChange={(e) => {
@@ -20,7 +20,7 @@ export const GameToolBar: React.FC<Props> = ({ init, gameMode, settings }) => {
           </option>
         ))}
       </select>
-    </div>
+    </nav>
   );
 };
 
