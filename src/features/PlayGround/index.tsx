@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import Cell from './components/Cell';
 import useConfetti from '@/hooks/useConfetti';
-import usePlayGround, { GameMode } from './hooks/usePlayGround';
+import useMineSweeper, { GameMode } from './hooks/useMineSweeper';
 import { Header } from './components/Header';
 import { toMarixPosition } from './functions/matrix';
 
@@ -19,7 +19,7 @@ const PlayGround = () => {
     switchFlagType,
     flags,
     settings,
-  } = usePlayGround();
+  } = useMineSweeper();
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
 

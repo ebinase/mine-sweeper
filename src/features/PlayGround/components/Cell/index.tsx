@@ -47,14 +47,7 @@ const getCell = (row: number, col: number): HTMLDivElement | null => {
   return document.querySelector(`div[data-row="${row}"][data-col="${col}"]`);
 };
 
-const Cell: React.FC<Props> = ({
-  cell,
-  row,
-  col,
-  handleClick,
-  toggleFlag,
-  switchFlagType,
-}) => {
+const Cell: React.FC<Props> = ({ cell, row, col, handleClick, toggleFlag, switchFlagType }) => {
   const cellRef = useRef<HTMLDivElement>(null);
 
   // TODO: 直線方向にボタンがないときに斜め方向も探索するようにする

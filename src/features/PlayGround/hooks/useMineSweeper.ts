@@ -113,7 +113,7 @@ const reducer = (state: State, action: Action): State => {
   }
 };
 
-const usePlayGround = () => {
+const useMineSweeper = () => {
   // reducer
   const [state, dispatch] = useReducer(reducer, initialize('easy'));
 
@@ -156,4 +156,4 @@ const usePlayGround = () => {
   };
 };
 
-export default usePlayGround;
+export default useMineSweeper;
