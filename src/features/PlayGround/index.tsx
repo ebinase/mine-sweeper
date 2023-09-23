@@ -55,12 +55,14 @@ const PlayGround = () => {
   }, [gameMode]);
 
   return (
-    <div>
-      <GameInfoHeader
-        normalFlags={flags.normal}
-        suspectedFlags={flags.suspected}
-        boardConfig={board.meta}
-      />
+    <div className='flex flex-col items-stretch'>
+      <div className='py-0.5'>
+        <GameInfoHeader
+          normalFlags={flags.normal}
+          suspectedFlags={flags.suspected}
+          boardConfig={board.meta}
+        />
+      </div>
       <div
         className={
           'overflow-auto w-fit h-fit max-w-[90vw] max-h-[55vh] md:max-h-[70vh] bg-black/50 dark:bg-white/50 select-none'
