@@ -17,6 +17,7 @@ import {
 type GameState = 'initialized' | 'playing' | 'completed' | 'failed';
 
 export type GameMode = 'easy' | 'normal' | 'hard';
+const GAME_MODE_LIST: GameMode[] = ['easy', 'normal', 'hard'];
 
 const gameModeToOptions = (gameMode: GameMode): BoardConfig => {
   switch (gameMode) {
@@ -151,6 +152,7 @@ const usePlayGround = () => {
     toggleFlag,
     switchFlagType,
     flags: { normal: normalFlags, suspected: suspectedFlags },
+    settings: { gameModeList: GAME_MODE_LIST },
   };
 };
 

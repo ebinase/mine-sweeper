@@ -18,6 +18,7 @@ const PlayGround = () => {
     toggleFlag,
     switchFlagType,
     flags,
+    settings,
   } = usePlayGround();
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
@@ -95,16 +96,13 @@ const PlayGround = () => {
           onChange={(e) => {
             init(e.target.value as GameMode);
           }}
+          defaultValue={gameMode}
         >
-          <option defaultChecked={gameMode === 'easy'} value='easy'>
-            Easy
-          </option>
-          <option defaultChecked={gameMode === 'normal'} value='normal'>
-            Normal
-          </option>
-          <option defaultChecked={gameMode === 'hard'} value='hard'>
-            Hard
-          </option>
+          {settings.gameModeList.map((mode) => (
+            <option key={mode} value={mode}>
+              {mode.charAt(0).toUpperCase() + mode.slice(1)}
+            </option>
+          ))}
         </select>
       </div>
 
