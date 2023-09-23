@@ -10,10 +10,10 @@ type Props = {
   boardConfig: BoardConfig;
 };
 
-export const Header: React.FC<Props> = ({ normalFlags, suspectedFlags, boardConfig }) => {
+export const GameInfoHeader: React.FC<Props> = ({ normalFlags, suspectedFlags, boardConfig }) => {
   const [showNormalFlag, setShowNormalFlag] = useState(true);
   return (
-    <header className='flex justify-between items-center py-0.5'>
+    <header className='flex justify-between items-center'>
       <h1>Mine Sweeper</h1>
       <div className='flex gap-2' onClick={() => setShowNormalFlag(!showNormalFlag)}>
         {showNormalFlag ? (

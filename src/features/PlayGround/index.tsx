@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import Cell from './components/Cell';
 import useConfetti from '@/hooks/useConfetti';
-import useMineSweeper, { GameMode } from './hooks/useMineSweeper';
-import { Header } from './components/Header';
-import { toMarixPosition } from './functions/matrix';
+import useMineSweeper from './hooks/useMineSweeper';
+import { GameInfoHeader } from './components/GameInfoHeader';
+import Board from './components/Board';
+import GameToolBar from './components/GameToolBar';
+import GameContextAction from './components/GameContextAction';
 
 const PlayGround = () => {
   const {
@@ -54,65 +55,29 @@ const PlayGround = () => {
   }, [gameMode]);
 
   return (
-    <div>
-      <Header
-        normalFlags={flags.normal}
-        suspectedFlags={flags.suspected}
-        boardConfig={board.meta}
-      />
+    <div className='h-full pt-[10vh] flex flex-col items-stretch'>
+      <div className='py-0.5 flex flex-col justify-end'>
+        <GameInfoHeader
+          normalFlags={flags.normal}
+          suspectedFlags={flags.suspected}
+          boardConfig={board.meta}
+        />
+      </div>
       <div
         className={
-          'overflow-auto w-fit h-fit max-w-[90vw] max-h-[55vh] md:max-h-[70vh] bg-black/50 dark:bg-white/50 select-none'
+          'overflow-auto max-w-[90vw] max-h-[55vh] md:max-h-[62vh] xl:max-h-[70vh] bg-black/50 dark:bg-white/50 select-none'
         }
         ref={boardRef}
       >
-        <div
-          className={'bg-slate-700 grid gap-1 p-2 w-fit'}
-          style={{
-            gridTemplateColumns: `repeat(${board.meta.cols}, 1fr)`,
-            gridTemplateRows: `repeat(${board.meta.rows}, 1fr)`,
-          }}
-        >
-          {board.data.flat().map((cell) => {
-            const [row, col] = toMarixPosition(cell.id, board.meta.cols);
-            return (
-              <Cell
-                key={cell.id}
-                cell={cell}
-                row={row}
-                col={col}
-                handleClick={open}
-                toggleFlag={toggleFlag}
-                switchFlagType={switchFlagType}
-              />
-            );
-          })}
-        </div>
+        <Board board={board} open={open} toggleFlag={toggleFlag} switchFlagType={switchFlagType} />
       </div>
       <div className='py-2'>
-        <select
-          className='bg-slate-500 p-1 rounded-none text-sm text-slate-100 focus:bg-slate-400 focus:scale-110 origin-left'
-          onChange={(e) => {
-            init(e.target.value as GameMode);
-          }}
-          defaultValue={gameMode}
-        >
-          {settings.gameModeList.map((mode) => (
-            <option key={mode} value={mode}>
-              {mode.charAt(0).toUpperCase() + mode.slice(1)}
-            </option>
-          ))}
-        </select>
+        <GameToolBar init={init} gameMode={gameMode} settings={settings} />
       </div>
 
       {(gameState === 'completed' || gameState === 'failed') && (
-        <div className='flex flex-col items-center py-10 gap-3'>
-          <button
-            className='bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] text-white px-3 py-1 text-sm focus:bg-slate-400 focus:scale-110 origin-center'
-            onClick={restart}
-          >
-            NEW GAME
-          </button>
+        <div className='py-5'>
+          <GameContextAction restart={restart} />
         </div>
       )}
     </div>

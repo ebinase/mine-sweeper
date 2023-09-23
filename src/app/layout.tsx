@@ -31,11 +31,16 @@ const ps2p = Press_Start_2P({ weight: '400', preload: false });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='ja'>
+    <html lang='ja' style={{ height: '-webkit-fill-available' }}>
       <head>
-        <meta name="thumbnail" content={url + '/thumbnail.png'} />
+        <meta name='thumbnail' content={url + '/thumbnail.png'} />
       </head>
-      <body className={ps2p.className}>{children}</body>
+      <body
+        className={ps2p.className + ' h-screen w-screen'}
+        style={{ height: '-webkit-fill-available' }}
+      >
+        {children}
+      </body>
       <Analytics />
     </html>
   );

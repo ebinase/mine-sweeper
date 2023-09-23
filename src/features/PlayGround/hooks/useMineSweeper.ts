@@ -157,3 +157,5 @@ const useMineSweeper = () => {
 };
 
 export default useMineSweeper;
+
+export type MineSweeper = ReturnType<typeof useMineSweeper>;
