@@ -37,7 +37,7 @@ type State = {
 
 type Action =
   | { type: 'init'; gameMode: GameMode }
-  | { type: 'reset' }
+  | { type: 'restart' }
   | { type: 'open'; index: number }
   | { type: 'toggleFlag'; index: number }
   | { type: 'switchFlagType'; index: number };
@@ -92,7 +92,7 @@ const reducer = (state: State, action: Action): State => {
     case 'init':
       return initialize(action.gameMode);
     // 同じゲームモードで初期化
-    case 'reset':
+    case 'restart':
       return initialize(state.gameMode);
     // マスを開く
     case 'open':
@@ -116,18 +116,42 @@ const usePlayGround = () => {
   // reducer
   const [state, dispatch] = useReducer(reducer, initialize('easy'));
 
+  // action
+  const init = useCallback(
+    (gameMode: GameMode) => dispatch({ type: 'init', gameMode }),
+    [dispatch],
+  );
+  const restart = useCallback(() => dispatch({ type: 'restart' }), [dispatch]);
+  const openAction = useCallback((index: number) => dispatch({ type: 'open', index }), [dispatch]);
+  const toggleFlag = useCallback(
+    (index: number) => dispatch({ type: 'toggleFlag', index }),
+    [dispatch],
+  );
+  const switchFlagType = useCallback(
+    (index: number) => dispatch({ type: 'switchFlagType', index }),
+    [dispatch],
+  );
+
   // middleware
   const [normalFlags, setNormalFlags] = useState(0);
   const [suspectedFlags, setSuspectedFlags] = useState(0);
   useEffect(() => {
     // クリアor失敗した場合にフラグの数が0になるが、終了時点でのフラグ数をキープしておくために終了時は更新しない
     if (state.gameState === 'completed' || state.gameState === 'failed') return;
-      
+
     setNormalFlags(countNormalFlags(state.board));
     setSuspectedFlags(countSuspectedFlags(state.board));
   }, [state]);
 
-  return { ...state, dispatch, flags: { normal: normalFlags, suspected: suspectedFlags } };
+  return {
+    ...state,
+    init,
+    restart,
+    open: openAction,
+    toggleFlag,
+    switchFlagType,
+    flags: { normal: normalFlags, suspected: suspectedFlags },
+  };
 };
 
 export default usePlayGround;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import Cell from './components/Cell';
 import useConfetti from '@/hooks/useConfetti';
 import usePlayGround, { GameMode } from './hooks/usePlayGround';
@@ -8,7 +8,17 @@ import { Header } from './components/Header';
 import { toMarixPosition } from './functions/matrix';
 
 const PlayGround = () => {
-  const { board, gameState, gameMode, dispatch, flags } = usePlayGround();
+  const {
+    board,
+    gameState,
+    gameMode,
+    init,
+    restart,
+    open,
+    toggleFlag,
+    switchFlagType,
+    flags,
+  } = usePlayGround();
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
 
@@ -42,19 +52,13 @@ const PlayGround = () => {
     }
   }, [gameMode]);
 
-  const handleClick = useCallback((index: number) => dispatch({ type: 'open', index }), [dispatch]);
-  const toggleFlag = useCallback(
-    (index: number) => dispatch({ type: 'toggleFlag', index }),
-    [dispatch],
-  );
-  const switchFlagType = useCallback(
-    (index: number) => dispatch({ type: 'switchFlagType', index }),
-    [dispatch],
-  );
-
   return (
     <div>
-      <Header normalFlags={flags.normal} suspectedFlags={flags.suspected} boardConfig={board.meta} />
+      <Header
+        normalFlags={flags.normal}
+        suspectedFlags={flags.suspected}
+        boardConfig={board.meta}
+      />
       <div
         className={
           'overflow-auto w-fit h-fit max-w-[90vw] max-h-[55vh] md:max-h-[70vh] bg-black/50 dark:bg-white/50 select-none'
@@ -77,7 +81,7 @@ const PlayGround = () => {
                 row={row}
                 col={col}
                 isFailed={gameState === 'failed'}
-                handleClick={handleClick}
+                handleClick={open}
                 toggleFlag={toggleFlag}
                 switchFlagType={switchFlagType}
               />
@@ -89,7 +93,7 @@ const PlayGround = () => {
         <select
           className='bg-slate-500 p-1 rounded-none text-sm text-slate-100 focus:bg-slate-400 focus:scale-110 origin-left'
           onChange={(e) => {
-            dispatch({ type: 'init', gameMode: e.target.value as GameMode });
+            init(e.target.value as GameMode);
           }}
         >
           <option defaultChecked={gameMode === 'easy'} value='easy'>
@@ -108,9 +112,7 @@ const PlayGround = () => {
         <div className='flex flex-col items-center py-10 gap-3'>
           <button
             className='bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] text-white px-3 py-1 text-sm focus:bg-slate-400 focus:scale-110 origin-center'
-            onClick={() => {
-              dispatch({ type: 'reset' });
-            }}
+            onClick={restart}
           >
             NEW GAME
           </button>
