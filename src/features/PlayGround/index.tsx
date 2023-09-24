@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import useConfetti from '@/hooks/useConfetti';
 import useMineSweeper from './hooks/useMineSweeper';
 import { GameInfoHeader } from './components/GameInfoHeader';
@@ -22,7 +22,9 @@ const PlayGround = () => {
     settings,
   } = useMineSweeper();
   const confetti = useConfetti();
-  const boardRef = useRef<HTMLDivElement>(null);
+  const [zoom, setZoom] = useState(true);
+
+  const handleZoomToggle = () => setZoom(!zoom);
 
   useEffect(() => {
     if (gameState !== 'completed') return;
@@ -41,19 +43,6 @@ const PlayGround = () => {
     return () => clearInterval(timerId);
   }, [gameState, confetti]);
 
-  useEffect(() => {
-    // TODO: もっとわかりやすいUIにする
-    const boardElement = boardRef.current;
-    if (!boardElement) return;
-    // 盤面サイズが正しく図れるようにする
-    boardElement.classList.remove('p-2');
-    // スクロール可能な場合は見た目が分かりやすくなるようpaddingを追加する
-    const isScrollable = boardElement.scrollHeight > boardElement.clientHeight;
-    if (isScrollable) {
-      boardElement.classList.add('p-2');
-    }
-  }, [gameMode]);
-
   return (
     <div className='h-full pt-[10vh] flex flex-col items-stretch'>
       <div className='py-0.5 flex flex-col justify-end'>
@@ -63,16 +52,20 @@ const PlayGround = () => {
           boardConfig={board.meta}
         />
       </div>
-      <div
-        className={
-          'overflow-auto max-w-[90vw] max-h-[55vh] md:max-h-[62vh] xl:max-h-[70vh] bg-black/50 dark:bg-white/50 select-none'
-        }
-        ref={boardRef}
-      >
-        <Board board={board} open={open} toggleFlag={toggleFlag} switchFlagType={switchFlagType} />
-      </div>
+      <Board
+        board={board}
+        open={open}
+        toggleFlag={toggleFlag}
+        switchFlagType={switchFlagType}
+        zoom={zoom}
+      />
       <div className='py-2'>
-        <GameToolBar init={init} gameMode={gameMode} settings={settings} />
+        <GameToolBar
+          init={init}
+          gameMode={gameMode}
+          settings={settings}
+          handleZoomToggle={handleZoomToggle}
+        />
       </div>
 
       {(gameState === 'completed' || gameState === 'failed') && (
