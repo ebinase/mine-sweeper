@@ -17,7 +17,7 @@ import {
 type GameState = 'initialized' | 'playing' | 'completed' | 'failed';
 
 export type GameMode = 'easy' | 'normal' | 'hard';
-const GAME_MODE_LIST: GameMode[] = ['easy', 'normal', 'hard'];
+export const GAME_MODE_LIST: GameMode[] = ['easy', 'normal', 'hard'];
 
 const gameModeToOptions = (gameMode: GameMode): BoardConfig => {
   switch (gameMode) {
@@ -113,9 +113,9 @@ const reducer = (state: State, action: Action): State => {
   }
 };
 
-const useMineSweeper = () => {
+const useMineSweeper = (defaultGameMode: GameMode = 'easy') => {
   // reducer
-  const [state, dispatch] = useReducer(reducer, initialize('easy'));
+  const [state, dispatch] = useReducer(reducer, initialize(defaultGameMode));
 
   // action
   const init = useCallback(

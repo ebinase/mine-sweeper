@@ -2,13 +2,17 @@
 
 import { useEffect, useRef } from 'react';
 import useConfetti from '@/hooks/useConfetti';
-import useMineSweeper from './hooks/useMineSweeper';
+import useMineSweeper, { GameMode } from './hooks/useMineSweeper';
 import { GameInfoHeader } from './components/GameInfoHeader';
 import Board from './components/Board';
 import GameToolBar from './components/GameToolBar';
 import GameContextAction from './components/GameContextAction';
 
-const PlayGround = () => {
+type Props = {
+  defaultGameMode: GameMode;
+};
+
+const PlayGround: React.FC<Props> = ({ defaultGameMode }) => {
   const {
     board,
     gameState,
@@ -20,7 +24,7 @@ const PlayGround = () => {
     switchFlagType,
     flags,
     settings,
-  } = useMineSweeper();
+  } = useMineSweeper(defaultGameMode);
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
 
