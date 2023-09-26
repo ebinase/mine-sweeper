@@ -3,6 +3,7 @@
 import PlayGround from '@/features/PlayGround';
 import { GAME_MODE_LIST, GameMode } from '@/features/PlayGround/hooks/useMineSweeper';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 type Props = {
   params: {
@@ -14,14 +15,19 @@ export default function Play({ params }: Props) {
   const router = useRouter();
   const { gameMode } = params;
 
-  // ゲームモードの文字列が不正な場合は404を返す
-  if (!GAME_MODE_LIST.includes(gameMode)) {
-    router.replace('/404');
-  }
+  const isValidGameMode = GAME_MODE_LIST.includes(gameMode);
+
+  useEffect(() => {
+    // ゲームモードの文字列が不正な場合は404を返す
+    if (!isValidGameMode) {
+      router.replace('/404');
+    }
+  }, [isValidGameMode, router]);
+
 
   return (
     <main className='flex h-full w-full flex-col items-center'>
-      <PlayGround defaultGameMode={gameMode}></PlayGround>
+      {isValidGameMode ? <PlayGround defaultGameMode={gameMode}></PlayGround> : null}
     </main>
   );
 }
