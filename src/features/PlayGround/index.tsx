@@ -13,18 +13,8 @@ type Props = {
 };
 
 const PlayGround: React.FC<Props> = ({ defaultGameMode }) => {
-  const {
-    board,
-    gameState,
-    gameMode,
-    init,
-    restart,
-    open,
-    toggleFlag,
-    switchFlagType,
-    flags,
-    settings,
-  } = useMineSweeper(defaultGameMode);
+  const { board, gameState, gameMode, restart, open, toggleFlag, switchFlagType, flags, settings } =
+    useMineSweeper(defaultGameMode);
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
 
@@ -76,7 +66,7 @@ const PlayGround: React.FC<Props> = ({ defaultGameMode }) => {
         <Board board={board} open={open} toggleFlag={toggleFlag} switchFlagType={switchFlagType} />
       </div>
       <div className='py-2'>
-        <GameToolBar init={init} gameMode={gameMode} settings={settings} />
+        <GameToolBar gameMode={gameMode} settings={settings} />
       </div>
 
       {(gameState === 'completed' || gameState === 'failed') && (
