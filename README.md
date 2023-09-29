@@ -1,6 +1,8 @@
 # Mine Sweeper 
 Simple Minesweeper app developed with Next.js.
 
+You can play here: https://mine-sweeper.ebinas.dev/
+
 <img width="1440" alt="playground_screenshot" src="https://github.com/ebinase/mine-sweeper/assets/54468945/da4a609c-8213-47c9-86c9-90fbae6f5103">
 
 
