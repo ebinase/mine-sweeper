@@ -2,7 +2,7 @@
 
 import useLongPress from '@/hooks/useLongPress';
 import Image from 'next/image';
-import { isFlagged, type CellData } from '../../functions/board';
+import { isFlagged, type CellData } from '@ebinas/react-use-minesweeper';
 
 type Props = {
   handleClick: (id: number) => void;

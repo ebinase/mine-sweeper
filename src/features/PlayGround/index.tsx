@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import useConfetti from '@/hooks/useConfetti';
-import useMineSweeper from './hooks/useMineSweeper';
+import { useMinesweeper } from '@ebinas/react-use-minesweeper';
 import { GameInfoHeader } from './components/GameInfoHeader';
 import Board from './components/Board';
 import GameToolBar from './components/GameToolBar';
@@ -20,7 +20,7 @@ const PlayGround = () => {
     switchFlagType,
     flags,
     settings,
-  } = useMineSweeper();
+  } = useMinesweeper();
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
 

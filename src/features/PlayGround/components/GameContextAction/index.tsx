@@ -1,8 +1,8 @@
 'use client';
 
-import type { MineSweeper } from '@/features/PlayGround/hooks/useMineSweeper';
+import type { Minesweeper } from '@ebinas/react-use-minesweeper';
 
-type Props = Pick<MineSweeper, 'restart'>;
+type Props = Pick<Minesweeper, 'restart'>;
 
 export const GameContextAction: React.FC<Props> = ({ restart }) => {
   return (

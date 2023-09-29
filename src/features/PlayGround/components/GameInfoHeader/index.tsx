@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { BoardConfig } from '../../functions/board';
+import { BoardConfig } from '@ebinas/react-use-minesweeper';
 import { useState } from 'react';
 
 type Props = {

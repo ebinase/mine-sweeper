@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { CellData, isCount, isMine } from '../../functions/board';
+import { CellData, isCount, isMine } from '@ebinas/react-use-minesweeper';
 
 const COLOR_MAP: Record<number, string> = {
   1: 'text-blue-600',
