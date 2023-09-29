@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import OpenedCell from './OpenedCell';
 import UnopenedCell from './UnopenedCell';
-import { CellData, isOpened } from '../../functions/board';
+import { CellData, isOpened } from '@ebinas/react-use-minesweeper';
 
 type Props = {
   cell: CellData;

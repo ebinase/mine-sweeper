@@ -2,9 +2,9 @@
 
 import { toMarixPosition } from '../../functions/matrix';
 import Cell from '../Cell';
-import { MineSweeper } from '../../hooks/useMineSweeper';
+import { Minesweeper } from '@ebinas/react-use-minesweeper';
 
-type Props = Pick<MineSweeper, 'board' | 'open' | 'toggleFlag' | 'switchFlagType'>;
+type Props = Pick<Minesweeper, 'board' | 'open' | 'toggleFlag' | 'switchFlagType'>;
 
 const Board: React.FC<Props> = ({ board, open, toggleFlag, switchFlagType }) => {
   return (

@@ -1,8 +1,8 @@
 'use client';
 
-import type { GameMode, MineSweeper } from '@/features/PlayGround/hooks/useMineSweeper';
+import type { GameMode, Minesweeper } from '@ebinas/react-use-minesweeper';
 
-type Props = Pick<MineSweeper, 'init' | 'gameMode' | 'settings'>;
+type Props = Pick<Minesweeper, 'init' | 'gameMode' | 'settings'>;
 
 export const GameToolBar: React.FC<Props> = ({ init, gameMode, settings }) => {
   return (
