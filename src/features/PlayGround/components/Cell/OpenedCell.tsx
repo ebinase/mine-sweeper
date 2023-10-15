@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { CellData, isCount, isMine } from '@ebinas/react-use-minesweeper';
+import { Cell, isMineCount, isMine } from '@ebinas/react-use-minesweeper';
 
 const COLOR_MAP: Record<number, string> = {
   1: 'text-blue-600',
@@ -49,13 +49,13 @@ const Count = ({ value }: { value: number }) => {
   );
 };
 
-const OpenedCell: React.FC<{ cell: CellData }> = ({ cell }) => {
+const OpenedCell: React.FC<{ cell: Cell }> = ({ cell }) => {
   return (
     <div className={'h-full w-full bg-slate-50'}>
       {isMine(cell) ? (
         <Bomb isExploded={cell.content.exploded} />
       ) : (
-        isCount(cell) && <Count value={cell.content.value} />
+        isMineCount(cell) && <Count value={cell.content.value} />
       )}
     </div>
   );

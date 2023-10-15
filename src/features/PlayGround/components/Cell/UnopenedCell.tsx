@@ -2,11 +2,11 @@
 
 import useLongPress from '@/hooks/useLongPress';
 import Image from 'next/image';
-import { isFlagged, type CellData } from '@ebinas/react-use-minesweeper';
+import { isFlagged, type Cell } from '@ebinas/react-use-minesweeper';
 
 type Props = {
   handleClick: (id: number) => void;
-  cell: CellData;
+  cell: Cell;
   toggleFlag: (id: number) => void;
   switchFlagType: (id: number) => void;
 };
