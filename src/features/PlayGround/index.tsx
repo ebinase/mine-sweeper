@@ -65,7 +65,7 @@ const PlayGround = () => {
       </div>
       <div
         className={
-          'overflow-auto max-w-[90vw] max-h-[55vh] md:max-h-[62vh] xl:max-h-[70vh] bg-black/50 dark:bg-white/50 select-none'
+          'overflow-auto max-w-[90vw] max-h-[55vh] md:max-h-[62vh] xl:max-h-[70vh] bg-black/50 dark:bg-white/50'
         }
         ref={boardRef}
       >
