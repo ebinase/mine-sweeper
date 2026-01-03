@@ -25,6 +25,7 @@ const PlayGround = () => {
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [showGuideHint, setShowGuideHint] = useState(false);
 
   useEffect(() => {
     if (gameState !== 'completed') return;
@@ -56,6 +57,28 @@ const PlayGround = () => {
     }
   }, [gameMode]);
 
+  useEffect(() => {
+    const storageKey = 'ms-guide-seen';
+    try {
+      if (localStorage.getItem(storageKey)) return;
+      setShowGuideHint(true);
+    } catch {
+      setShowGuideHint(true);
+    }
+  }, []);
+
+  const openHelp = () => {
+    setIsHelpOpen(true);
+    if (showGuideHint) {
+      setShowGuideHint(false);
+      try {
+        localStorage.setItem('ms-guide-seen', '1');
+      } catch {
+        // Ignore storage failures.
+      }
+    }
+  };
+
   return (
     <div className='h-full pt-[10vh] flex flex-col items-stretch'>
       <div className='py-0.5 flex flex-col justify-end'>
@@ -77,11 +100,15 @@ const PlayGround = () => {
         <GameToolBar init={init} gameMode={gameMode} settings={settings} />
         <button
           type='button'
-          className='flex items-center justify-center w-6 h-6 text-[0.7rem] text-slate-500/90 bg-slate-200/40 border border-slate-300/70 rounded-sm hover:bg-slate-200/70 hover:text-slate-700/90'
-          onClick={() => setIsHelpOpen(true)}
+          className={
+            showGuideHint
+              ? 'px-2 py-1 text-[0.65rem] sm:text-xs text-slate-500/90 tracking-wide hover:text-slate-700/90'
+              : 'px-2 py-1 text-[0.65rem] sm:text-xs text-slate-500/90 bg-transparent opacity-0 hover:opacity-100 focus-visible:opacity-100 transition-opacity'
+          }
+          onClick={openHelp}
           aria-label='Help'
         >
-          <span className='leading-none'>?</span>
+          <span className='leading-none'>GUIDE</span>
         </button>
       </div>
 
