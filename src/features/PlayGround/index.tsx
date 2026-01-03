@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useConfetti from '@/hooks/useConfetti';
 import { useMinesweeper } from '@ebinas/react-use-minesweeper';
 import { GameInfoHeader } from './components/GameInfoHeader';
 import Board from './components/Board';
 import GameToolBar from './components/GameToolBar';
 import GameContextAction from './components/GameContextAction';
+import HelpDialog from './components/HelpDialog';
 
 const PlayGround = () => {
   const {
@@ -23,6 +24,7 @@ const PlayGround = () => {
   } = useMinesweeper();
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   useEffect(() => {
     if (gameState !== 'completed') return;
@@ -71,8 +73,11 @@ const PlayGround = () => {
       >
         <Board board={board} open={open} toggleFlag={toggleFlag} switchFlagType={switchFlagType} />
       </div>
-      <div className='py-2'>
+      <div className='py-2 flex justify-between'>
         <GameToolBar init={init} gameMode={gameMode} settings={settings} />
+        <button type='button' className='' onClick={() => setIsHelpOpen(true)}>
+          Help
+        </button>
       </div>
 
       {(gameState === 'completed' || gameState === 'failed') && (
@@ -80,6 +85,7 @@ const PlayGround = () => {
           <GameContextAction restart={restart} />
         </div>
       )}
+      <HelpDialog isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
     </div>
   );
 };
