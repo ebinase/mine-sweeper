@@ -32,7 +32,7 @@ const HelpDialog: React.FC<Props> = ({ isOpen, onClose }) => {
       />
       <div className='relative z-10 w-[90vw] max-w-sm rounded-sm bg-slate-700 p-4 text-slate-100 shadow-lg'>
         <div className='flex items-center justify-between'>
-          <h2 className='text-sm font-semibold'>操作方法</h2>
+          <h2 className='text-sm font-semibold'>GUIDE</h2>
           <button
             type='button'
             className='text-xs px-2 py-1 bg-slate-500'
