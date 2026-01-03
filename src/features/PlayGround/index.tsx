@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useConfetti from '@/hooks/useConfetti';
 import { useMinesweeper } from '@ebinas/react-use-minesweeper';
 import { GameInfoHeader } from './components/GameInfoHeader';
 import Board from './components/Board';
 import GameToolBar from './components/GameToolBar';
 import GameContextAction from './components/GameContextAction';
+import HelpDialog from './components/HelpDialog';
 
 const PlayGround = () => {
   const {
@@ -23,6 +24,8 @@ const PlayGround = () => {
   } = useMinesweeper();
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [showGuideHint, setShowGuideHint] = useState(false);
 
   useEffect(() => {
     if (gameState !== 'completed') return;
@@ -54,6 +57,28 @@ const PlayGround = () => {
     }
   }, [gameMode]);
 
+  useEffect(() => {
+    const storageKey = 'ms-guide-seen';
+    try {
+      if (localStorage.getItem(storageKey)) return;
+      setShowGuideHint(true);
+    } catch {
+      setShowGuideHint(true);
+    }
+  }, []);
+
+  const openHelp = () => {
+    setIsHelpOpen(true);
+    if (showGuideHint) {
+      setShowGuideHint(false);
+      try {
+        localStorage.setItem('ms-guide-seen', '1');
+      } catch {
+        // Ignore storage failures.
+      }
+    }
+  };
+
   return (
     <div className='h-full pt-[10vh] flex flex-col items-stretch'>
       <div className='py-0.5 flex flex-col justify-end'>
@@ -71,8 +96,20 @@ const PlayGround = () => {
       >
         <Board board={board} open={open} toggleFlag={toggleFlag} switchFlagType={switchFlagType} />
       </div>
-      <div className='py-2'>
+      <div className='py-2 flex justify-between'>
         <GameToolBar init={init} gameMode={gameMode} settings={settings} />
+        <button
+          type='button'
+          className={
+            showGuideHint
+              ? 'px-2 py-1 text-[0.65rem] sm:text-xs text-slate-500/90 tracking-wide hover:text-slate-700/90'
+              : 'px-2 py-1 text-[0.65rem] sm:text-xs text-slate-500/90 bg-transparent opacity-0 hover:opacity-100 focus-visible:opacity-100 transition-opacity'
+          }
+          onClick={openHelp}
+          aria-label='Help'
+        >
+          <span className='leading-none'>GUIDE</span>
+        </button>
       </div>
 
       {(gameState === 'completed' || gameState === 'failed') && (
@@ -80,6 +117,7 @@ const PlayGround = () => {
           <GameContextAction restart={restart} />
         </div>
       )}
+      <HelpDialog isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
     </div>
   );
 };
