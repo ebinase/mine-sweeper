@@ -105,18 +105,16 @@ body {
   background: #f8fafc;
 }
 
-.help-number {
+.help-number-text {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 1.5rem;
-  height: 1.5rem;
-  transform: translate(-50%, -50%);
-  stroke: #2563eb;
-  stroke-width: 2.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  fill: none;
+  transform: translate(-50%, -52%);
+  color: #2563eb;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  font-family: inherit;
 }
 
 

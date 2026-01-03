@@ -75,8 +75,13 @@ const PlayGround = () => {
       </div>
       <div className='py-2 flex justify-between'>
         <GameToolBar init={init} gameMode={gameMode} settings={settings} />
-        <button type='button' className='' onClick={() => setIsHelpOpen(true)}>
-          Help
+        <button
+          type='button'
+          className='flex items-center justify-center w-6 h-6 text-[0.7rem] text-slate-500/90 bg-slate-200/40 border border-slate-300/70 rounded-sm hover:bg-slate-200/70 hover:text-slate-700/90'
+          onClick={() => setIsHelpOpen(true)}
+          aria-label='Help'
+        >
+          <span className='leading-none'>?</span>
         </button>
       </div>
 

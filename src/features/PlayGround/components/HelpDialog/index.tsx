@@ -60,9 +60,7 @@ const HelpDialog: React.FC<Props> = ({ isOpen, onClose }) => {
             </div>
             <div className='help-cell-result' aria-hidden='true'>
               <div className='help-cell help-cell-open'>
-                <svg className='help-number' viewBox='0 0 24 24' focusable='false'>
-                  <path d='M11 6l-2.5 2.5M12 6v12M9 18h6' />
-                </svg>
+                <span className='help-number-text'>1</span>
               </div>
             </div>
             <span className='sr-only'>クリック/タップで開く</span>
