@@ -8,6 +8,8 @@ You can play here: https://mine-sweeper.ebinas.dev/
 
 ## Getting Started
 
+Use Node.js 20.9.0 or later locally and in the deployment environment.
+
 install dependencies
 
 ```
