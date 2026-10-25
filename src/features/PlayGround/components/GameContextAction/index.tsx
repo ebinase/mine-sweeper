@@ -1,4 +1,4 @@
-import type { Minesweeper } from '@ebinas/react-use-minesweeper';
+import type { Minesweeper } from '@ebinas/react-use-minesweeper/react';
 
 type Props = Pick<Minesweeper, 'restart'>;
 

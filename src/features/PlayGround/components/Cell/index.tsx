@@ -1,15 +1,11 @@
 import React, { useRef } from 'react';
 import OpenedCell from './OpenedCell';
 import UnopenedCell from './UnopenedCell';
-import { type Cell, isOpened } from '@ebinas/react-use-minesweeper';
+import type { Cell } from '@ebinas/react-use-minesweeper';
+import type { Minesweeper } from '@ebinas/react-use-minesweeper/react';
 
-type Props = {
+type Props = Pick<Minesweeper, 'open' | 'setFlag'> & {
   cell: Cell;
-  row: number;
-  col: number;
-  handleClick: (index: number) => void;
-  toggleFlag: (index: number) => void;
-  switchFlagType: (id: number) => void;
 };
 
 type Direction = 'up' | 'down' | 'left' | 'right';
@@ -45,7 +41,7 @@ const getCell = (row: number, col: number): HTMLDivElement | null => {
   return document.querySelector(`div[data-row="${row}"][data-col="${col}"]`);
 };
 
-const Cell: React.FC<Props> = ({ cell, row, col, handleClick, toggleFlag, switchFlagType }) => {
+const Cell: React.FC<Props> = ({ cell, open, setFlag }) => {
   const cellRef = useRef<HTMLDivElement>(null);
 
   // TODO: 直線方向にボタンがないときに斜め方向も探索するようにする
@@ -78,20 +74,15 @@ const Cell: React.FC<Props> = ({ cell, row, col, handleClick, toggleFlag, switch
   return (
     <div
       className={'flex justify-center items-center aspect-square w-[8vmin] md:w-[6vmin]'}
-      data-row={row}
-      data-col={col}
+      data-row={cell.row}
+      data-col={cell.col}
       ref={cellRef}
       onKeyDown={handleArrowMove}
     >
-      {isOpened(cell) ? (
+      {cell.state === 'revealed' ? (
         <OpenedCell cell={cell} />
       ) : (
-        <UnopenedCell
-          cell={cell}
-          handleClick={() => handleClick(cell.id)}
-          toggleFlag={() => toggleFlag(cell.id)}
-          switchFlagType={() => switchFlagType(cell.id)}
-        />
+        <UnopenedCell cell={cell} open={open} setFlag={setFlag} />
       )}
     </div>
   );
