@@ -1,15 +1,13 @@
 import { gameImages } from '@/assets/gameImages';
 import useLongPress from '@/hooks/useLongPress';
-import { isFlagged, type Cell } from '@ebinas/react-use-minesweeper';
+import type { Cell } from '@ebinas/react-use-minesweeper';
+import type { Minesweeper } from '@ebinas/react-use-minesweeper/react';
 
-type Props = {
-  handleClick: (id: number) => void;
-  cell: Cell;
-  toggleFlag: (id: number) => void;
-  switchFlagType: (id: number) => void;
+type Props = Pick<Minesweeper, 'open' | 'setFlag'> & {
+  cell: Extract<Cell, { state: 'hidden' }>;
 };
 
-const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFlagType }) => {
+const UnopenedCell: React.FC<Props> = ({ open, cell, setFlag }) => {
   /**
    * フラグなし
    * - 左クリック: 開放
@@ -19,14 +17,17 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFl
    * - 左クリック長押し: フラグを外す
    * - 右クリック: フラグを外す
    */
-  const handleLongPress = () => toggleFlag(cell.id);
+  const toggleFlag = () => setFlag(cell.id, cell.flag === 'none' ? 'flag' : 'none');
+  const handleLongPress = toggleFlag;
   const handleClickWithFlag = () =>
-    isFlagged(cell) ? switchFlagType(cell.id) : handleClick(cell.id); // フラグが立っているときは開放しない
+    cell.flag === 'none'
+      ? open(cell.id)
+      : setFlag(cell.id, cell.flag === 'flag' ? 'question' : 'flag');
   const longPressEvent = useLongPress(handleLongPress, handleClickWithFlag);
   // 右クリックでフラグを切り替える
   const handleContextMenu = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    toggleFlag(cell.id);
+    toggleFlag();
   };
 
   // キーボード操作
@@ -35,7 +36,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFl
       e.preventDefault();
       handleClickWithFlag();
     } else if (e.key === 'f' || e.key === 'F') {
-      toggleFlag(cell.id);
+      toggleFlag();
     }
   };
 
@@ -48,8 +49,8 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFl
       onKeyDown={handleKeyDown}
       aria-label={`Cell at position ${cell.id}`}
     >
-      {isFlagged(cell) &&
-        (cell.state.flag === 'suspected' ? (
+      {cell.flag !== 'none' &&
+        (cell.flag === 'question' ? (
           <span className='text-gray-300 md:text-2xl'>?</span>
         ) : (
           <img

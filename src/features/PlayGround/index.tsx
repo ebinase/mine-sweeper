@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import useConfetti from '@/hooks/useConfetti';
-import { useMinesweeper } from '@ebinas/react-use-minesweeper';
+import { useMinesweeper } from '@ebinas/react-use-minesweeper/react';
 import { GameInfoHeader } from './components/GameInfoHeader';
 import Board from './components/Board';
 import GameToolBar from './components/GameToolBar';
@@ -8,25 +8,14 @@ import GameContextAction from './components/GameContextAction';
 import HelpDialog from './components/HelpDialog';
 
 const PlayGround = () => {
-  const {
-    board,
-    gameState,
-    gameMode,
-    init,
-    restart,
-    open,
-    toggleFlag,
-    switchFlagType,
-    flags,
-    settings,
-  } = useMinesweeper();
+  const { game, board, stats, reset, restart, open, setFlag } = useMinesweeper();
   const confetti = useConfetti();
   const boardRef = useRef<HTMLDivElement>(null);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [showGuideHint, setShowGuideHint] = useState(false);
 
   useEffect(() => {
-    if (gameState !== 'completed') return;
+    if (game.status !== 'won') return;
 
     confetti.showBoth();
 
@@ -40,7 +29,7 @@ const PlayGround = () => {
     }, 3000);
 
     return () => clearInterval(timerId);
-  }, [gameState, confetti]);
+  }, [game.status, confetti]);
 
   useEffect(() => {
     // TODO: もっとわかりやすいUIにする
@@ -53,7 +42,7 @@ const PlayGround = () => {
     if (isScrollable) {
       boardElement.classList.add('p-2');
     }
-  }, [gameMode]);
+  }, [game.config]);
 
   useEffect(() => {
     const storageKey = 'ms-guide-seen';
@@ -81,9 +70,9 @@ const PlayGround = () => {
     <div className='h-full pt-[10vh] flex flex-col items-stretch'>
       <div className='py-0.5 flex flex-col justify-end'>
         <GameInfoHeader
-          normalFlags={flags.normal}
-          suspectedFlags={flags.suspected}
-          boardConfig={board.meta}
+          normalFlags={stats.flags}
+          suspectedFlags={stats.questions}
+          boardConfig={board.config}
         />
       </div>
       <div
@@ -92,10 +81,10 @@ const PlayGround = () => {
         }
         ref={boardRef}
       >
-        <Board board={board} open={open} toggleFlag={toggleFlag} switchFlagType={switchFlagType} />
+        <Board board={board} open={open} setFlag={setFlag} />
       </div>
       <div className='py-2 flex justify-between'>
-        <GameToolBar init={init} gameMode={gameMode} settings={settings} />
+        <GameToolBar reset={reset} preset={game.preset ?? 'easy'} />
         <button
           type='button'
           className={
@@ -110,7 +99,7 @@ const PlayGround = () => {
         </button>
       </div>
 
-      {(gameState === 'completed' || gameState === 'failed') && (
+      {(game.status === 'won' || game.status === 'lost') && (
         <div className='py-5'>
           <GameContextAction restart={restart} />
         </div>

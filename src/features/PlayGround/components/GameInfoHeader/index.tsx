@@ -1,5 +1,5 @@
 import { gameImages } from '@/assets/gameImages';
-import { BoardConfig } from '@ebinas/react-use-minesweeper';
+import type { BoardConfig } from '@ebinas/react-use-minesweeper';
 import { useState } from 'react';
 
 type Props = {
