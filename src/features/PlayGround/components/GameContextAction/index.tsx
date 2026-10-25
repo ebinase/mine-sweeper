@@ -1,5 +1,3 @@
-'use client';
-
 import type { Minesweeper } from '@ebinas/react-use-minesweeper';
 
 type Props = Pick<Minesweeper, 'restart'>;

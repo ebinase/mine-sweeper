@@ -1,7 +1,5 @@
-'use client';
-
+import { gameImages } from '@/assets/gameImages';
 import React from 'react';
-import Image from 'next/image';
 import { Cell, isMineCount, isMine } from '@ebinas/react-use-minesweeper';
 
 const COLOR_MAP: Record<number, string> = {
@@ -27,15 +25,15 @@ const Bomb = ({ isExploded }: { isExploded: boolean }) => {
       }`}
     >
       {isExploded ? (
-        <Image
-          src='/mine_explode.svg'
+        <img
+          src={gameImages.explodedMine}
           alt='exploded mine'
           width={30}
           height={30}
           className='w-2/3'
         />
       ) : (
-        <Image src='/mine.svg' alt='mine' width={30} height={30} className='w-3/5' />
+        <img src={gameImages.mine} alt='mine' width={30} height={30} className='w-3/5' />
       )}
     </div>
   );

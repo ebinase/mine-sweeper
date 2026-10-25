@@ -1,5 +1,5 @@
 # Mine Sweeper 
-Simple Minesweeper app developed with Next.js.
+Simple Minesweeper app built with React, TypeScript, and Vite.
 
 You can play here: https://mine-sweeper.ebinas.dev/
 
@@ -8,7 +8,7 @@ You can play here: https://mine-sweeper.ebinas.dev/
 
 ## Getting Started
 
-Use Node.js 20.9.0 or later locally and in the deployment environment.
+Use Node.js 20.19+, 22.13+, or 24+ locally and in the deployment environment.
 
 install dependencies
 
@@ -27,6 +27,27 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Build and checks
+
+- `npm run lint`: check React Hooks rules and source syntax.
+- `npm run build`: type-check and build static files into `dist/`.
+- `npm run preview`: preview the production build locally (not a production server).
+
+`npm test` checks tap, long press, and canceled pointer interactions without extra test dependencies.
+After changes, check opening cells, flags,
+difficulty selection, restart, and the guide in a browser, including mobile layouts.
+
+## Deployment
+
+Vercel settings are defined in `vercel.json`: Vite, `npm run build`, and `dist/`.
+Keep the existing Vercel project and domain. Check a Preview Deployment before
+promoting the migration to production. No server functions or SPA rewrites are needed.
+
+Site metadata lives in `index.html`; robots, sitemap, social images, and the self-hosted
+font live in `public/`. The font license is at `public/fonts/OFL.txt`.
+Game images live in `src/assets/` and are embedded in the initial JavaScript bundle
+as data URLs, so showing flags and mines requires no additional image requests.
 
 ## Assets
 ### Lib

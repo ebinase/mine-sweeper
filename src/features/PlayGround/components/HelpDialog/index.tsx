@@ -1,6 +1,4 @@
-'use client';
-
-import Image from 'next/image';
+import { gameImages } from '@/assets/gameImages';
 import { useEffect } from 'react';
 
 type Props = {
@@ -33,11 +31,7 @@ const HelpDialog: React.FC<Props> = ({ isOpen, onClose }) => {
       <div className='relative z-10 w-[90vw] max-w-sm rounded-sm bg-slate-700 p-4 text-slate-100 shadow-lg'>
         <div className='flex items-center justify-between'>
           <h2 className='text-sm font-semibold'>GUIDE</h2>
-          <button
-            type='button'
-            className='text-xs px-2 py-1 bg-slate-500'
-            onClick={onClose}
-          >
+          <button type='button' className='text-xs px-2 py-1 bg-slate-500' onClick={onClose}>
             CLOSE
           </button>
         </div>
@@ -82,7 +76,7 @@ const HelpDialog: React.FC<Props> = ({ isOpen, onClose }) => {
             </div>
             <div className='help-cell-result' aria-hidden='true'>
               <div className='help-cell help-cell-closed'>
-                <Image src='/flag.png' alt='' width={16} height={16} className='help-flag' />
+                <img src={gameImages.flag} alt='' width={16} height={16} className='help-flag' />
               </div>
             </div>
             <span className='sr-only'>長押しで旗を付ける</span>
@@ -90,7 +84,7 @@ const HelpDialog: React.FC<Props> = ({ isOpen, onClose }) => {
           <div className='help-row'>
             <div className='help-cell-stack' aria-hidden='true'>
               <div className='help-cell help-cell-closed'>
-                <Image src='/flag.png' alt='' width={16} height={16} className='help-flag' />
+                <img src={gameImages.flag} alt='' width={16} height={16} className='help-flag' />
               </div>
               <div className='help-ripple' />
               <div className='help-cursor'>

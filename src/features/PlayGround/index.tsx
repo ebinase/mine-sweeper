@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useRef, useState } from 'react';
 import useConfetti from '@/hooks/useConfetti';
 import { useMinesweeper } from '@ebinas/react-use-minesweeper';
