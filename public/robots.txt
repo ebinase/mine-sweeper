@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mine-sweeper.ebinas.dev/sitemap.xml

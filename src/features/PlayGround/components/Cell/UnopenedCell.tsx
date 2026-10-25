@@ -1,7 +1,4 @@
-'use client';
-
 import useLongPress from '@/hooks/useLongPress';
-import Image from 'next/image';
 import { isFlagged, type Cell } from '@ebinas/react-use-minesweeper';
 
 type Props = {
@@ -44,7 +41,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFl
   return (
     <button
       type='button'
-      className='h-full w-full flex justify-center items-center bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] focus:bg-slate-400'
+      className='touch-manipulation h-full w-full flex justify-center items-center bg-slate-500 shadow-[2px_2px_2px_#444,-1px_-1px_1px_#fff] focus:bg-slate-400'
       {...longPressEvent}
       onContextMenu={handleContextMenu}
       onKeyDown={handleKeyDown}
@@ -54,7 +51,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFl
         (cell.state.flag === 'suspected' ? (
           <span className='text-gray-300 md:text-2xl'>?</span>
         ) : (
-          <Image
+          <img
             src='/flag.png'
             alt='red flag'
             width={30}

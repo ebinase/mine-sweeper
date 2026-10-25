@@ -1,9 +1,7 @@
-'use client';
-
 import React, { useRef } from 'react';
 import OpenedCell from './OpenedCell';
 import UnopenedCell from './UnopenedCell';
-import { Cell, isOpened } from '@ebinas/react-use-minesweeper';
+import { type Cell, isOpened } from '@ebinas/react-use-minesweeper';
 
 type Props = {
   cell: Cell;

@@ -3,46 +3,39 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=20.9.0"
+    "node": "^20.19.0 || ^22.13.0 || >=24"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "start": "vite preview",
+    "lint": "eslint . --max-warnings=0",
     "format": "prettier --write --ignore-path .gitignore './**/*.{js,jsx,ts,tsx,json,css}'",
-    "test": "jest --watch"
+    "preview": "vite preview",
+    "test": "node --test src/hooks/*.test.mjs"
   },
   "dependencies": {
     "@ebinas/react-use-minesweeper": "^1.0.0",
-    "@types/node": "20.5.0",
-    "@types/react": "18.2.20",
-    "@types/react-dom": "18.2.7",
     "@vercel/analytics": "^1.0.2",
-    "autoprefixer": "10.4.15",
     "canvas-confetti": "^1.6.0",
-    "eslint": "8.57.1",
-    "eslint-config-next": "^15.5.28",
-    "next": "^15.5.28",
-    "postcss": "^8.5.23",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "tailwindcss": "3.3.3",
-    "typescript": "5.1.6"
-  },
-  "overrides": {
-    "next": {
-      "postcss": "$postcss",
-      "sharp": "^0.35.5"
-    }
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.1.2",
-    "@testing-library/react": "^14.0.0",
     "@types/canvas-confetti": "^1.6.0",
-    "@types/jest": "^29.5.4",
+    "@types/node": "^22.20.5",
+    "@types/react": "18.2.20",
+    "@types/react-dom": "18.2.7",
+    "@typescript-eslint/parser": "^8.72.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "autoprefixer": "10.4.15",
+    "eslint": "^10.13.0",
     "eslint-config-prettier": "^9.0.0",
-    "jest": "^29.6.4",
-    "prettier": "^3.0.2"
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "postcss": "^8.5.23",
+    "prettier": "^3.0.2",
+    "tailwindcss": "3.3.3",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.5"
   }
 }

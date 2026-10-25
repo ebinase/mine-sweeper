@@ -1,5 +1,3 @@
-'use client';
-
 import { toMarixPosition } from '../../functions/matrix';
 import Cell from '../Cell';
 import { Minesweeper } from '@ebinas/react-use-minesweeper';
