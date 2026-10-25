@@ -1,3 +1,4 @@
+import { gameImages } from '@/assets/gameImages';
 import { useEffect } from 'react';
 
 type Props = {
@@ -75,7 +76,7 @@ const HelpDialog: React.FC<Props> = ({ isOpen, onClose }) => {
             </div>
             <div className='help-cell-result' aria-hidden='true'>
               <div className='help-cell help-cell-closed'>
-                <img src='/flag.png' alt='' width={16} height={16} className='help-flag' />
+                <img src={gameImages.flag} alt='' width={16} height={16} className='help-flag' />
               </div>
             </div>
             <span className='sr-only'>長押しで旗を付ける</span>
@@ -83,7 +84,7 @@ const HelpDialog: React.FC<Props> = ({ isOpen, onClose }) => {
           <div className='help-row'>
             <div className='help-cell-stack' aria-hidden='true'>
               <div className='help-cell help-cell-closed'>
-                <img src='/flag.png' alt='' width={16} height={16} className='help-flag' />
+                <img src={gameImages.flag} alt='' width={16} height={16} className='help-flag' />
               </div>
               <div className='help-ripple' />
               <div className='help-cursor'>

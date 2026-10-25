@@ -1,3 +1,4 @@
+import { gameImages } from '@/assets/gameImages';
 import React from 'react';
 import { Cell, isMineCount, isMine } from '@ebinas/react-use-minesweeper';
 
@@ -24,9 +25,15 @@ const Bomb = ({ isExploded }: { isExploded: boolean }) => {
       }`}
     >
       {isExploded ? (
-        <img src='/mine_explode.svg' alt='exploded mine' width={30} height={30} className='w-2/3' />
+        <img
+          src={gameImages.explodedMine}
+          alt='exploded mine'
+          width={30}
+          height={30}
+          className='w-2/3'
+        />
       ) : (
-        <img src='/mine.svg' alt='mine' width={30} height={30} className='w-3/5' />
+        <img src={gameImages.mine} alt='mine' width={30} height={30} className='w-3/5' />
       )}
     </div>
   );

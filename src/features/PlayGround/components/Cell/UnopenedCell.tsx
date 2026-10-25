@@ -1,3 +1,4 @@
+import { gameImages } from '@/assets/gameImages';
 import useLongPress from '@/hooks/useLongPress';
 import { isFlagged, type Cell } from '@ebinas/react-use-minesweeper';
 
@@ -52,7 +53,7 @@ const UnopenedCell: React.FC<Props> = ({ handleClick, cell, toggleFlag, switchFl
           <span className='text-gray-300 md:text-2xl'>?</span>
         ) : (
           <img
-            src='/flag.png'
+            src={gameImages.flag}
             alt='red flag'
             width={30}
             height={30}

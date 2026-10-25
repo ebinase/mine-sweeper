@@ -1,3 +1,4 @@
+import { gameImages } from '@/assets/gameImages';
 import { BoardConfig } from '@ebinas/react-use-minesweeper';
 import { useState } from 'react';
 
@@ -15,7 +16,7 @@ export const GameInfoHeader: React.FC<Props> = ({ normalFlags, suspectedFlags, b
       <div className='flex gap-2' onClick={() => setShowNormalFlag(!showNormalFlag)}>
         {showNormalFlag ? (
           <div className='flex items-center'>
-            <img src='/flag.png' alt='flag' width={15} height={15} />
+            <img src={gameImages.flag} alt='flag' width={15} height={15} />
             <span className='text-xs'>×{normalFlags}</span>
           </div>
         ) : (
@@ -26,7 +27,7 @@ export const GameInfoHeader: React.FC<Props> = ({ normalFlags, suspectedFlags, b
         )}
 
         <div className='flex items-center'>
-          <img src='/mine.svg' alt='exploded mine' width={15} height={15} />
+          <img src={gameImages.mine} alt='exploded mine' width={15} height={15} />
           <span className='text-xs'>×{boardConfig.mines}</span>
         </div>
       </div>

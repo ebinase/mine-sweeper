@@ -44,8 +44,10 @@ Vercel settings are defined in `vercel.json`: Vite, `npm run build`, and `dist/`
 Keep the existing Vercel project and domain. Check a Preview Deployment before
 promoting the migration to production. No server functions or SPA rewrites are needed.
 
-Site metadata lives in `index.html`; robots, sitemap, images, and the self-hosted
+Site metadata lives in `index.html`; robots, sitemap, social images, and the self-hosted
 font live in `public/`. The font license is at `public/fonts/OFL.txt`.
+Game images live in `src/assets/` and are embedded in the initial JavaScript bundle
+as data URLs, so showing flags and mines requires no additional image requests.
 
 ## Assets
 ### Lib
