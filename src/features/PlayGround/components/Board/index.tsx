@@ -1,9 +1,9 @@
 import Cell from '../Cell';
 import type { Minesweeper } from '@ebinas/react-use-minesweeper/react';
 
-type Props = Pick<Minesweeper, 'board' | 'open' | 'setFlag'>;
+type Props = Pick<Minesweeper, 'board' | 'open' | 'setFlag'> & { isLost: boolean };
 
-const Board: React.FC<Props> = ({ board, open, setFlag }) => {
+const Board: React.FC<Props> = ({ board, isLost, open, setFlag }) => {
   return (
     <section
       className={'w-fit h-fit bg-slate-700 grid gap-1 p-2'}
@@ -13,7 +13,7 @@ const Board: React.FC<Props> = ({ board, open, setFlag }) => {
       }}
     >
       {board.cells.map((cell) => (
-        <Cell key={cell.id} cell={cell} open={open} setFlag={setFlag} />
+        <Cell key={cell.id} cell={cell} isLost={isLost} open={open} setFlag={setFlag} />
       ))}
     </section>
   );

@@ -6,6 +6,7 @@ import type { Minesweeper } from '@ebinas/react-use-minesweeper/react';
 
 type Props = Pick<Minesweeper, 'open' | 'setFlag'> & {
   cell: Cell;
+  isLost: boolean;
 };
 
 type Direction = 'up' | 'down' | 'left' | 'right';
@@ -41,7 +42,7 @@ const getCell = (row: number, col: number): HTMLDivElement | null => {
   return document.querySelector(`div[data-row="${row}"][data-col="${col}"]`);
 };
 
-const Cell: React.FC<Props> = ({ cell, open, setFlag }) => {
+const Cell: React.FC<Props> = ({ cell, isLost, open, setFlag }) => {
   const cellRef = useRef<HTMLDivElement>(null);
 
   // TODO: 直線方向にボタンがないときに斜め方向も探索するようにする
@@ -80,7 +81,7 @@ const Cell: React.FC<Props> = ({ cell, open, setFlag }) => {
       onKeyDown={handleArrowMove}
     >
       {cell.state === 'revealed' ? (
-        <OpenedCell cell={cell} />
+        <OpenedCell cell={cell} isLost={isLost} />
       ) : (
         <UnopenedCell cell={cell} open={open} setFlag={setFlag} />
       )}

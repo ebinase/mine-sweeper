@@ -47,10 +47,12 @@ const Count = ({ value }: { value: number }) => {
   );
 };
 
-const OpenedCell: React.FC<{ cell: Extract<Cell, { state: 'revealed' }> }> = ({ cell }) => {
+type Props = { cell: Extract<Cell, { state: 'revealed' }>; isLost: boolean };
+
+const OpenedCell: React.FC<Props> = ({ cell, isLost }) => {
   return (
     <div className={'h-full w-full bg-slate-50'}>
-      {cell.value === 'mine' ? <Bomb isExploded={cell.exploded} /> : <Count value={cell.value} />}
+      {cell.value === 'mine' ? <Bomb isExploded={isLost} /> : <Count value={cell.value} />}
     </div>
   );
 };

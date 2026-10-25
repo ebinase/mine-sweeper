@@ -67,8 +67,8 @@ const PlayGround = () => {
   };
 
   return (
-    <div className='h-full pt-[10vh] flex flex-col items-stretch'>
-      <div className='py-0.5 flex flex-col justify-end'>
+    <div className='max-h-full flex flex-col items-stretch'>
+      <div className='shrink-0 py-0.5 flex flex-col justify-end'>
         <GameInfoHeader
           normalFlags={stats.flags}
           suspectedFlags={stats.questions}
@@ -77,13 +77,13 @@ const PlayGround = () => {
       </div>
       <div
         className={
-          'overflow-auto max-w-[90vw] max-h-[55vh] md:max-h-[62vh] xl:max-h-[70vh] bg-black/50 dark:bg-white/50'
+          'overflow-auto max-w-[90vw] max-h-[55dvh] md:max-h-[62dvh] xl:max-h-[70dvh] bg-black/50 dark:bg-white/50'
         }
         ref={boardRef}
       >
-        <Board board={board} open={open} setFlag={setFlag} />
+        <Board board={board} isLost={game.status === 'lost'} open={open} setFlag={setFlag} />
       </div>
-      <div className='py-2 flex justify-between'>
+      <div className='shrink-0 py-2 flex justify-between'>
         <GameToolBar reset={reset} preset={game.preset ?? 'easy'} />
         <button
           type='button'
@@ -99,11 +99,13 @@ const PlayGround = () => {
         </button>
       </div>
 
-      {(game.status === 'won' || game.status === 'lost') && (
-        <div className='py-5'>
-          <GameContextAction restart={restart} />
-        </div>
-      )}
+      <div
+        className={`shrink-0 py-5 ${
+          game.status === 'won' || game.status === 'lost' ? 'visible' : 'invisible'
+        }`}
+      >
+        <GameContextAction restart={restart} />
+      </div>
       <HelpDialog isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
     </div>
   );
